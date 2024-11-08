@@ -1,7 +1,7 @@
 import os
 import random
 import sys
-# prints the board givin as a list with nine Filds to the output
+# prints the board givin as a list with nine Fields to the output
 def print_board(board:list):
     print("+-------" * 3 + "+")
     print("|" + "\t|" * 3)
@@ -16,7 +16,6 @@ def print_board(board:list):
     print("|  " + str(board[6]) + "\t|  " + str(board[7]) + "\t|  " + str(board[8]) + "\t|")
     print("|" + "\t|" * 3)
     print("+-------" * 3 + "+")
-
 
 # Gets a move, the Board and a Bool if it's the users Turn, playes the Move and returns True if its valid and returns False if the move is invalid
 def enter_move(move,board:list,user:bool=True):
