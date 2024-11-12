@@ -1,6 +1,5 @@
 import os
 import random
-import sys
 # prints the board givin as a list with nine Fields to the output
 def print_board(play_board:list):
     board = color_board(play_board)
@@ -25,9 +24,7 @@ def color_board(board:list):
             tmp[i] = "\033[31m" + tmp[i] + "\033[0m"
         if tmp[i] == player_short_name:
             tmp[i] = "\033[32m" + tmp[i] + "\033[0m"
-    return tmp
-        
-        
+    return tmp     
         
 # Gets a move, the Board and a Bool if it's the users Turn, playes the Move and returns True if its valid and returns False if the move is invalid
 def execute_move(move:int,board:list,user:bool=True):               
@@ -102,7 +99,7 @@ def winner_check(board:list):
                 else:
                     return None
     if len(list_of_free_fields(board,False)) < 1:
-        return "Tie"
+        return "nobody"
     return winner
 
 def bot_move(board:list):
@@ -128,7 +125,7 @@ def check(board:list):
     clear_terminal()
     if winner_check(board) != None:
         print_board(board)
-        print("Der Sieger ist: " + winner_check(board))
+        print("Winner is: " + winner_check(board))
         return True
     return False
 
@@ -144,8 +141,6 @@ def pre_game():
         player_short_name = input("Short name for the player (max 4 Buchstaben): - ")
         if len(player_short_name) > 4:
             print("Short name to LONG ... Try again")
-        else:
-            pregame = False
         bot_short_name = input("Short name for Bot (max 4 Buchstaben): - ")
         if len(bot_short_name) > 4 or player_short_name == bot_short_name:
             print("Short name to LONG or same as player name... Try again")
