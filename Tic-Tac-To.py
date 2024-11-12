@@ -18,8 +18,7 @@ def print_board(board:list):
     print("+-------" * 3 + "+")
 
 # Gets a move, the Board and a Bool if it's the users Turn, playes the Move and returns True if its valid and returns False if the move is invalid
-def enter_move(move,board:list,user:bool=True):
-    if move == 0: sys.exit(0)               
+def execute_move(move:int,board:list,user:bool=True):               
     if move in list_of_free_fields(board,False):
         if user:
             board[move - 1] = player_short_name 
@@ -28,7 +27,7 @@ def enter_move(move,board:list,user:bool=True):
             board[move - 1] = bot_short_name
             return True 
     else:
-        print("We dont try to steal our oponents Fields")
+        print("We dont try to steal allready set fields")
         return False
 
 #returns a list of all free spaces and prints them to the Output if "output" is set to True  
@@ -45,8 +44,8 @@ def list_of_free_fields(board:list,output=True):
 def read_player_move():
     while True:
         try:
-            move = int(input("PLease enter a valid input (1-9) ATTENTION: 0 terminates the Programm \n\t - "))
-            if -1 < move < 10:
+            move = int(input("PLease enter a valid input (1-9) ATTENTION:\n\t - "))
+            if 0 < move < 10:
                 return move
         except:
             pass
@@ -59,17 +58,17 @@ def winner_check(board:list):
         if i in [0,3,6]:
             if board[i] == board [i + 1] == board[i + 2]:
                 if board[i] == bot_short_name:
-                    winner = "BOT"
+                    winner = bot_short_name
                 elif board[i] == player_short_name:
-                    winner = "Player"
+                    winner = player_short_name
                 else:
                     return None
         try:
             if board[i] == board[i + 3] == board[i + 6]:
                 if board[i] == bot_short_name:
-                    winner = "BOT"
+                    winner = bot_short_name
                 elif board[i] == player_short_name:
-                    winner = "Player"
+                    winner = player_short_name
                 else:
                     return None
         except:
@@ -77,26 +76,24 @@ def winner_check(board:list):
         if i == 0:
             if board[i] == board[i + 4] == board[i + 8]:
                 if board[i] == bot_short_name:
-                    winner = "BOT"
+                    winner = bot_short_name
                 elif board[i] == player_short_name:
-                    winner = "Player"
+                    winner = player_short_name
                 else:
                     return None
         if i == 2:
             if board[i] == board[i + 2] == board[i + 4]:
                 if board[i] == bot_short_name:
-                    winner = "BOT"
+                    winner = bot_short_name
                 elif board[i] == player_short_name:
-                    winner = "Player"
+                    winner = player_short_name
                 else:
                     return None
     if len(list_of_free_fields(board,False)) < 1:
-        return "Unentschieden"
-    return winner    
-    print("Irgendwer hat gewonnen oder nicht")
-    sys.exit(0)
+        return "Tie"
+    return winner
 
-def pc_zug(board:list):
+def bot_move(board:list):
     tmp = []
     nati = []                               #like tmp but crazy name lol
     boardtest = board[:]
@@ -116,20 +113,21 @@ def pc_zug(board:list):
         return random.choice(list_of_free_fields(board,False))
 
 def check(board:list):
-    os.system('cls' if os.name =='nt' else 'clear')
+    clear_terminal()
     if winner_check(board) != None:
         print_board(board)
         print("Der Sieger ist: " + winner_check(board))
         return True
     return False
 
-def pre_game():
-    pregame = True 
-    global player_short_name 
-    player_short_name = "O"
-    global bot_short_name
-    bot_short_name = "X"
+def clear_terminal():
     os.system('cls' if os.name =='nt' else 'clear')
+
+def pre_game():
+    global player_short_name    
+    global bot_short_name 
+    pregame = True
+    clear_terminal()
     while pregame:
         player_short_name = input("Short name for the player (max 4 Buchstaben): - ")
         if len(player_short_name) > 4:
@@ -143,23 +141,25 @@ def pre_game():
             pregame = False
 
 def game():
-    os.system('cls' if os.name =='nt' else 'clear')
+    clear_terminal()
     game_active = True
     board = [1,2,3,4,5,6,7,8,9]
-    #enter_move(5,board,False)
-    enter_move(pc_zug(board),board,False)
+    if random.randint(0,1):                                     #50/50 Chance for Bot to start game
+        execute_move(bot_move(board),board,False)
+        print("Bot has Started")
     while game_active:
         print_board(board)
         invalid_input = True
         while invalid_input:
             list_of_free_fields(board)
             user_input = read_player_move()
-            invalid_input = not enter_move(user_input,board)
+            invalid_input = not execute_move(user_input,board)
         if check(board):break
-        pc_move = pc_zug(board) #random.choice(list_of_free_fields(board,False))
-        enter_move(pc_move,board,False)
+        pc_move = bot_move(board)                               
+        execute_move(pc_move,board,False)
         if check(board):break
-            
+
+    
 pre_game()
 game()
 while True: 
@@ -167,6 +167,6 @@ while True:
     if answer.lower() in ['y','j','yes']:
         game()
     elif answer.lower() in ['x','n','no']:
-        sys.exit(0)
+        break        
     else:
         print("Please select a valid answer")

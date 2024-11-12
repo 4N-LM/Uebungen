@@ -32,8 +32,8 @@ def set_stone(field:list,row:int,player_marc:str="o"):
         return True
     else:
         for i in range(0,5):
-            if field[i+1][row] == "O":
-                field[i][row] = "O"
+            if field[i+1][row] != std_empty:
+                field[i][row] = "o"
         return False
     
 def get_player_input():
@@ -46,7 +46,7 @@ def get_player_input():
             if player_input == -1:
                 quit()
             print("Number not in defined Area!\t Try again")
-        except(TypeError):
+        except(TypeError,ValueError):
             print("Not a number!! \t Try again")
 
 
@@ -59,6 +59,7 @@ def winner_check(field:list):
                 except:
                     print("Error")
 
+std_empty = "x" #standart empty field char
 field = create_field()
 
 def left_up_check(posx:int,posy:int,field:list):
@@ -68,7 +69,7 @@ def left_up_check(posx:int,posy:int,field:list):
         print("Error in left_up_check")
 
 
-std_empty = "x" #standart empty field char
+
 
 while True:
     clear()
