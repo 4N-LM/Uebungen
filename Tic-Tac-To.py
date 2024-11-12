@@ -2,7 +2,8 @@ import os
 import random
 import sys
 # prints the board givin as a list with nine Fields to the output
-def print_board(board:list):
+def print_board(play_board:list):
+    board = color_board(play_board)
     print("+-------" * 3 + "+")
     print("|" + "\t|" * 3)
     print("|  " + str(board[0]) + "\t|  " + str(board[1]) + "\t|  " + str(board[2]) + "\t|")
@@ -17,6 +18,17 @@ def print_board(board:list):
     print("|" + "\t|" * 3)
     print("+-------" * 3 + "+")
 
+def color_board(board:list):
+    tmp = board[:]
+    for i in range(8):
+        if tmp[i] == bot_short_name:
+            tmp[i] = "\033[31m" + tmp[i] + "\033[0m"
+        if tmp[i] == player_short_name:
+            tmp[i] = "\033[32m" + tmp[i] + "\033[0m"
+    return tmp
+        
+        
+        
 # Gets a move, the Board and a Bool if it's the users Turn, playes the Move and returns True if its valid and returns False if the move is invalid
 def execute_move(move:int,board:list,user:bool=True):               
     if move in list_of_free_fields(board,False):
@@ -105,9 +117,9 @@ def bot_move(board:list):
         boardtest = board[:]   
         boardtest[i-1] = player_short_name
         nati.append(winner_check(boardtest))
-    if 'BOT' in tmp:
+    if bot_short_name in tmp:
         return list_of_free_fields(board)[(tmp.index('BOT'))]
-    elif 'Player' in nati:
+    elif player_short_name in nati:
         return list_of_free_fields(board)[(nati.index('Player'))]
     else:
         return random.choice(list_of_free_fields(board,False))

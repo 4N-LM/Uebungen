@@ -1,9 +1,9 @@
-import random
-test = []
-
-for i in range(30):
-    test.append(random.randint(0,1))
+def info(string):
+    print(
+        "[\033[32m i \033[0m] {}".format(string)
+    )
+a = "\033[32m HUI \033[0m "
+def test():
+    print(a)
     
-    
-
-    print("Treffer")
+test()
