@@ -20,7 +20,7 @@ def print_board(play_board:list):
 
 def color_board(board:list):
     tmp = board[:]
-    for i in range(8):
+    for i in range(9):
         if tmp[i] == bot_short_name:
             tmp[i] = "\033[31m" + tmp[i] + "\033[0m"
         if tmp[i] == player_short_name:
@@ -118,9 +118,9 @@ def bot_move(board:list):
         boardtest[i-1] = player_short_name
         nati.append(winner_check(boardtest))
     if bot_short_name in tmp:
-        return list_of_free_fields(board)[(tmp.index('BOT'))]
+        return list_of_free_fields(board)[(tmp.index(bot_short_name))]
     elif player_short_name in nati:
-        return list_of_free_fields(board)[(nati.index('Player'))]
+        return list_of_free_fields(board)[(nati.index(player_short_name))]
     else:
         return random.choice(list_of_free_fields(board,False))
 
