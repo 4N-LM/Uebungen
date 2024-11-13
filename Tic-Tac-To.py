@@ -53,7 +53,7 @@ def list_of_free_fields(board:list,output=True):
 def read_player_move():
     while True:
         try:
-            move = int(input("PLease enter a valid input (1-9) ATTENTION:\n\t - "))
+            move = int(input("Please enter a valid input (1-9) ATTENTION:\n\t - "))
             if 0 < move < 10:
                 return move
         except:
