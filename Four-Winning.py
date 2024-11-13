@@ -26,7 +26,7 @@ def set_stone(field:list,row:int,player_marc:str):
     if field[5][row] == std_empty:
         field[5][row] = player_marc
         return False
-    elif field[0][row] == player_marc:
+    elif field[0][row] != std_empty:
         print("Line Full !! \nPlease Enter a new valid Line")
         return True
     else:
@@ -104,7 +104,7 @@ std_empty = "x" #standart empty field char
 player_one_name = "A"
 player_two_name = "B"
 field = create_field()
-
+active_player_is_one = True
 # clear()
 # test = [5,4,3,3,3,3]
 # for i in test:
@@ -120,7 +120,15 @@ while True:
     print(winner_check(field))
     invalid_move = True
     while invalid_move:
-        player_input = get_player_input()
-        invalid_move = set_stone(field,player_input,player_one_name)
+        if active_player_is_one:
+            print("Its first players Turn")
+            player_input = get_player_input()
+            invalid_move = set_stone(field,player_input,player_one_name)
+            active_player_is_one = False
+        else:
+            print("Its second players Turn")
+            player_input = get_player_input()
+            invalid_move = set_stone(field,player_input,player_two_name)
+            active_player_is_one = True
     
 
