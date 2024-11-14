@@ -30,7 +30,7 @@ def color_field(field:list):
     for i in range(6):
         for j in range(7):
             if field_colored[i][j] == player_name:
-                 field_colored[i][j] = "\033[31m" + field_colored[i][j] + "\033[0m"
+                field_colored[i][j] = "\033[31m" + field_colored[i][j] + "\033[0m"
             if field_colored[i][j] != std_empty:
                 field_colored[i][j] = "\033[32m" + field_colored[i][j] +  "\033[0m"
     return field_colored
