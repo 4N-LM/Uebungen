@@ -2,8 +2,6 @@ import os
 import sys
 import client
 
-client.init('127.0.0.1',44844)
-
 def quit():
     clear()
     print("exiting")
@@ -21,10 +19,21 @@ def create_field():
     return field
 
 def print_field(field:list):
+    field_to_print = color_field(field)[:]
     for i in range(0,6):
         for j in range(0,7):
-            print(field[i][j],end="\t")
+            print(field_to_print[i][j],end="\t")
         print("\n")
+
+def color_field(field:list):
+    field_colored = field[:]
+    for i in range(6):
+        for j in range(7):
+            if field_colored[i][j] == player_name:
+                 field_colored[i][j] = "\033[31m" + field_colored[i][j] + "\033[0m"
+            if field_colored[i][j] != std_empty:
+                field_colored[i][j] = "\033[32m" + field_colored[i][j] +  "\033[0m"
+    return field_colored
 
 def set_stone(field:list,row:int,player_marc:str):
     if field[5][row] == std_empty:
@@ -137,10 +146,19 @@ def str_to_field(input_str:str):
         str_to_edit = str_to_edit[1:]
     return tmp
 
+IP = str(input("Please Enter the Server IP"))
+port = int(input("Please Enter the Games port"))
+
+if IP == "":
+    IP = '127.0.0.1'
+if port == "":
+    port = 44844
+
+client.init(IP,port)
 player_name = "O"
 std_empty = "x" #standart empty field char
 while True:
-    player_name = input("Input one Character long name for you")
+    player_name = input("Input one Character long name for you: \n - ")
     if 0 > len(player_name) > 1:
         print("Wrong input")
     else:
@@ -148,8 +166,6 @@ while True:
 field = create_field()
 
 first = ('True' == client.answer())
-print(first)
-input()
 i = 0
 while True:
     if first:

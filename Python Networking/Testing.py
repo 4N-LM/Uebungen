@@ -1,9 +1,6 @@
 
-from subprocess import run 
-
-#run(args='python ./client.py' ' "127.0.0.1"' ' 44844' ' "Hello World"')
-
 std_empty = 'x'
+player_name = 'W'
 
 def create_field():
     field = []
@@ -13,33 +10,24 @@ def create_field():
         field.append(row[:])
     return field
 field = create_field()
-field[2][3] = "W"
-field[4][1] = "M"
+field[0][0] = "W"
+field[0][1] = "M"
 
+def print_field(field:list):
+    field_to_print = color_field(field)[:]
+    for i in range(0,6):
+        for j in range(0,7):
+            print(field_to_print[i][j],end="\t")
+        print("\n")
 
-def str_to_field(input_str:str):
-    str_to_edit = input_str
-    tmp = []
-    for i in range(5):
-        abc = []
-        for j in range(7):
-            abc.append(str_to_edit[0])
-            str_to_edit = str_to_edit[1:]
-        tmp.append(abc[:])
-        str_to_edit = str_to_edit[1:]
-    return tmp
-
-def field_to_str(field:list):
-    field_send_form2 = ""
-    field_send_form = []
+def color_field(field:list):
+    field_colored = field[:]
     for i in range(6):
         for j in range(7):
-            field_send_form.append(field[i][j])
-        field_send_form.append(":")
+            if field_colored[i][j] == player_name:
+                 field_colored[i][j] = "\033[31m" + field_colored[i][j] + "\033[0m"
+            if field_colored[i][j] != std_empty:
+                field_colored[i][j] = "\033[32m" + field_colored[i][j] +  "\033[0m"
+    return field_colored
 
-    field_send_form2 = "".join(field_send_form)
-    return field_send_form2
-
-test = field_to_str(field)
-print(test)
-print(str_to_field(test))
+print_field(field)

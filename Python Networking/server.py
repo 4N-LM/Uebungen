@@ -3,7 +3,9 @@ import random
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '0.0.0.0'
-port = 44844       
+port = input("Please Enter a port(if empty its <44844>)")       
+if port == "":
+    port = 44844
 server_socket.bind((host, port))
 server_socket.listen(2)
 
