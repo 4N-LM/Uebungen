@@ -33,6 +33,7 @@ def set_stone(field:list,row:int,player_marc:str):
         for i in range(0,5):
             if field[i+1][row] != std_empty:
                 field[i][row] = player_marc
+                break
         return False
     
 def get_player_input():
@@ -67,8 +68,9 @@ def winner_check(field:list):
             if 4 in row_count_side or 4 in row_count_left or 4 in row_count_right or 4 in row_count_up:
                 break
     row_count_left.sort();row_count_right.sort();row_count_side.sort();row_count_up.sort()
-    return "left: " + str(row_count_left[-1]) + "\nright: " + str(row_count_right[-1]) + "\nup: " + str(row_count_up[-1]) + "\nsideways: " + str(row_count_side[-1])
- 
+    #return "left: " + str(row_count_left[-1]) + "\nright: " + str(row_count_right[-1]) + "\nup: " + str(row_count_up[-1]) + "\nsideways: " + str(row_count_side[-1])
+    return str(row_count_left[-1]) + str(row_count_right[-1]) + str(row_count_up[-1]) + str(row_count_side[-1])
+
 def left_up_check(posx:int,posy:int,field:list,counter:int=1):
     tmp = counter
     if tmp < 4 and field[posx][posy] == field[posx-1][posy-1]:
@@ -97,8 +99,15 @@ def sideways_check(posx:int,posy:int,field:list,counter:int=1):
         tmp = sideways_check(posx,posy + 1,field,counter)
     return tmp
 
-
-
+def player_turn(player_name:str):
+    clear()
+    print_field(field)    
+    invalid_move = True
+    while invalid_move:
+        print("Its " + player_name +  "'s Turn")
+        player_input = get_player_input()
+        invalid_move = set_stone(field,player_input,player_name)
+    return "4" in winner_check(field)
 
 std_empty = "x" #standart empty field char
 player_one_name = "A"
@@ -115,20 +124,14 @@ active_player_is_one = True
 
 
 while True:
-    clear()
-    print_field(field)
-    print(winner_check(field))
-    invalid_move = True
-    while invalid_move:
-        if active_player_is_one:
-            print("Its first players Turn")
-            player_input = get_player_input()
-            invalid_move = set_stone(field,player_input,player_one_name)
-            active_player_is_one = False
-        else:
-            print("Its second players Turn")
-            player_input = get_player_input()
-            invalid_move = set_stone(field,player_input,player_two_name)
-            active_player_is_one = True
+    if player_turn(player_one_name):
+        clear()
+        print_field(field)
+        print("Winner is Player one")
+        break
+    if player_turn(player_two_name):
+        clear()
+        print_field(field)
+        print("Winner is player two")
+        break
     
-
