@@ -19,7 +19,10 @@ def create_field():
     return field
 
 def print_field(field:list):
-    field_to_print = color_field(field[:])
+    field_to_print = field[:]
+    field_to_print2 = color_field(field[:])
+    print(field_to_print)
+    print(field_to_print2)
     for i in range(0,6):
         for j in range(0,7):
             print(field_to_print[i][j],end="\t")
@@ -190,6 +193,4 @@ while True:
     first = True
 
 print(i)
-client.close_connection()
-  
-
+client.close_connection()  
