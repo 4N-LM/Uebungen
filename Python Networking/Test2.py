@@ -1,4 +1,5 @@
-import random
+test = [1,2]
+test2 = test
 
-for i in range(10):
-    print(bool(random.randint(0,1)))
+test2[1] = 1
+print(test)

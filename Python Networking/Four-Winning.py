@@ -19,14 +19,14 @@ def create_field():
     return field
 
 def print_field(field:list):
-    field_to_print = color_field(field)[:]
+    field_to_print = color_field(field[:])
     for i in range(0,6):
         for j in range(0,7):
             print(field_to_print[i][j],end="\t")
         print("\n")
 
-def color_field(field:list):
-    field_colored = field[:]
+def color_field(fielding:list):
+    field_colored = fielding[:]
     for i in range(6):
         for j in range(7):
             if field_colored[i][j] == player_name:
