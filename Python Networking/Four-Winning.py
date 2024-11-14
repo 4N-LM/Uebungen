@@ -173,10 +173,11 @@ while True:
         print_string = ""
         print_string += str(player_turn(player_name)) + ":"
         print_string += field_to_str(field)
+        client.send_data(print_string)
         if 'True' in print_string:
             print("You are the Winenr")
             break
-        client.send_data(print_string)
+        
     
     print("Waiting for Oponends Turn")
     answer_string = client.answer()
