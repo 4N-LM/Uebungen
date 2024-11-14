@@ -1,19 +1,32 @@
 import socket
-import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('server_ip',type=str,help='Input the Server IP')
-parser.add_argument('server_port',type=int,help='Input the Server Port')
-parser.add_argument('server_msg',type=str,help='Input the Massage')
-args = parser.parse_args()
+def init(IP:str,port_nr:int):
+    host = IP
+    port = port_nr
+    global client_socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((host, port))
 
-host = args.server_ip
-port = args.server_port
+if __name__ == '__main__':
+    init('127.0.0.1',44844)
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
 
-data = args.server_msg
-client_socket.send(data.encode())  # Daten senden
+def send_data(msg:str):    
+    data = msg
+    client_socket.send(data.encode())
 
-client_socket.close()
+
+
+def answer():
+    try:
+        while True:
+            data = client_socket.recv(1024)
+            if data.decode() != "":
+                return data.decode()
+            if data.decode().lower() == "exit":
+                close_connection()
+    except:
+        print("ein Fehler beim client")
+
+def close_connection():
+    client_socket.close()

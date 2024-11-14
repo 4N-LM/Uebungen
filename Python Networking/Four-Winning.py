@@ -1,6 +1,8 @@
 import os
 import sys
-from subprocess import run 
+import client
+
+client.init('127.0.0.1',44844)
 
 def quit():
     clear()
@@ -111,32 +113,64 @@ def player_turn(player_name:str):
         invalid_move = set_stone(field,player_input,player_name)
     return "4" in winner_check(field)
 
+def field_to_str(field:list):
+    field_send_form2 = ""
+    field_send_form = []
+    for i in range(6):
+        for j in range(7):
+            field_send_form.append(field[i][j])
+        field_send_form.append(":")
+
+    field_send_form2 = "".join(field_send_form)
+    return field_send_form2
+
+def str_to_field(input_str:str):
+    str_to_edit = input_str.replace('False:', '',1)
+
+    tmp = []
+    for i in range(6):
+        abc = []
+        for j in range(7):
+            abc.append(str_to_edit[0])
+            str_to_edit = str_to_edit[1:]
+        tmp.append(abc[:])
+        str_to_edit = str_to_edit[1:]
+    return tmp
+
+player_name = "O"
 std_empty = "x" #standart empty field char
-player_one_name = "A"
-player_two_name = "B"
-field = create_field()
-active_player_is_one = True
-# clear()
-# test = [5,4,3,3,3,3]
-# for i in test:
-#     set_stone(field,i)
-# print_field(field)
-
-# print(winner_check(field))
-
-
 while True:
-    if player_turn(player_one_name):
-        clear()
-        print_field(field)
-        print("Winner is Player one")
+    player_name = input("Input one Character long name for you")
+    if 0 > len(player_name) > 1:
+        print("Wrong input")
+    else:
         break
-    run(args='python ./client.py' ' "127.0.0.1"' ' 44844' '' + field)
-    if player_turn(player_two_name):
-        clear()
-        print_field(field)
-        print("Winner is player two")
+field = create_field()
+
+first = ('True' == client.answer())
+print(first)
+input()
+i = 0
+while True:
+    if first:
+        i += 1
+        print_string = ""
+        print_string += str(player_turn(player_name)) + ":"
+        print_string += field_to_str(field)
+        if 'True' in print_string:
+            print("You are the Winenr")
+            break
+        client.send_data(print_string)
+    
+    print("Waiting for Oponends Turn")
+    answer_string = client.answer()
+    if 'lost' in answer_string:
+        print("You have lost")
         break
+    field = str_to_field(answer_string)[:]
+    first = True
 
+print(i)
+client.close_connection()
+  
 
-run(args='python ./client.py' ' "127.0.0.1"' ' 44844' 'field')

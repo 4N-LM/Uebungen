@@ -13,13 +13,33 @@ def create_field():
         field.append(row[:])
     return field
 field = create_field()
-field_send_form2 = ""
+field[2][3] = "W"
+field[4][1] = "M"
 
-field_send_form = []
-for i in range(6):
-    for j in range(7):
-        field_send_form.append(field[i][j])
-    field_send_form.append(":")
 
-field_send_form2 = "".join(field_send_form)
-run(args='python ./client.py' ' "127.0.0.1"' ' 44844' ' ' + field_send_form2)
+def str_to_field(input_str:str):
+    str_to_edit = input_str
+    tmp = []
+    for i in range(5):
+        abc = []
+        for j in range(7):
+            abc.append(str_to_edit[0])
+            str_to_edit = str_to_edit[1:]
+        tmp.append(abc[:])
+        str_to_edit = str_to_edit[1:]
+    return tmp
+
+def field_to_str(field:list):
+    field_send_form2 = ""
+    field_send_form = []
+    for i in range(6):
+        for j in range(7):
+            field_send_form.append(field[i][j])
+        field_send_form.append(":")
+
+    field_send_form2 = "".join(field_send_form)
+    return field_send_form2
+
+test = field_to_str(field)
+print(test)
+print(str_to_field(test))
