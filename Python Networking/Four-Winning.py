@@ -147,12 +147,14 @@ def str_to_field(input_str:str):
     return tmp
 
 IP = str(input("Please enter the server IP"))
-port = int(input("Please enter the games port"))
+port = input("Please enter the games port")
 
 if IP == "":
     IP = '127.0.0.1'
 if port == "":
     port = 44844
+else:
+    port = int(port)
 
 client.init(IP,port)
 player_name = "O"
