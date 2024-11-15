@@ -48,10 +48,8 @@ while game:
             print(f"Data:\n {data.decode()}")
             client_socket2.send(data)
             print("Data sent to Client 2")
-            print("1")
         except Exception as e:
             print(e)
-        print("2")
     else:
         print("Player TWO's Turn")
         player_one_active = True

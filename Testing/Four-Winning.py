@@ -12,18 +12,18 @@ def clear():
     os.system('cls' if os.name =='nt' else 'clear')
 
 def create_field():
-    field = []
+    field_make = []
     row = [std_empty for i in range(7)]
     #row = [i for i in range(7)]                     #Field only for Tests 
     for i in range(0,6):
-        field.append(row[:])
-    return field
+        field_make.append(row[:])
+    return field_make[:]
 
-def print_field(input_list:list):
-    color_field(input_list)
+def print_field(input:list):
+    color_field(input)
     for i in range(0,6):
         for j in range(0,7):
-            print(input_list[i][j],end="\t")
+            print(input[i][j],end="\t")
         print("\n")
 
 def color_field(input:list):
@@ -34,7 +34,7 @@ def color_field(input:list):
                 field_colored[i][j] = "\033[31m" + field_colored[i][j] + "\033[0m"
             if field_colored[i][j] != std_empty:
                 field_colored[i][j] = "\033[32m" + field_colored[i][j] +  "\033[0m"
-    return field_colored
+    return field_colored[:]
 
 def set_stone(field:list,row:int,player_marc:str):
     if field[5][row] == std_empty:
@@ -166,7 +166,7 @@ while True:
         break
 field = create_field()
 
-first = ('True' == client.answer())
+first = True
 i = 0
 while True:
     if first:
@@ -174,11 +174,10 @@ while True:
         print_string = ""
         print_string += str(player_turn(player_name)) + ":"
         print_string += field_to_str(field)
-        client.send_data(print_string)
         if 'True' in print_string:
             print("You are the Winenr")
             break
-        
+        client.send_data(print_string)
     
     print("Waiting for Oponends Turn")
     answer_string = client.answer()
