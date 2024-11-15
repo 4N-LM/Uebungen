@@ -6,8 +6,6 @@ host = '0.0.0.0'
 port = input("Please Enter a port(if empty its <44844>)")       
 if port == "":
     port = 44844
-else:
-    port = int(port)
 server_socket.bind((host, port))
 server_socket.listen(2)
 

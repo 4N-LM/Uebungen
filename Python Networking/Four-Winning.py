@@ -19,17 +19,14 @@ def create_field():
     return field
 
 def print_field(field:list):
-    field_to_print = field[:]
-    field_to_print2 = color_field(field[:])
-    print(field_to_print)
-    print(field_to_print2)
+    field_to_print = color_field(field)[:]
     for i in range(0,6):
         for j in range(0,7):
             print(field_to_print[i][j],end="\t")
         print("\n")
 
-def color_field(fielding:list):
-    field_colored = fielding[:]
+def color_field(field:list):
+    field_colored = field[:]
     for i in range(6):
         for j in range(7):
             if field_colored[i][j] == player_name:
@@ -55,13 +52,13 @@ def set_stone(field:list,row:int,player_marc:str):
 def get_player_input():
     while True:
         try:
-            player_input = int(input("Enter a number (1-7) please (0 terminates programm): - "))
+            player_input = int(input("Number (1-7) please (0 Terminates Programm): - "))
             player_input -= 1            
             if -1 < player_input < 7:
                 return player_input
             if player_input == -1:
                 quit()
-            print("Number not in defined area!\t Try again")
+            print("Number not in defined Area!\t Try again")
         except(TypeError,ValueError):
             print("Not a number!! \t Try again")
 
@@ -120,7 +117,7 @@ def player_turn(player_name:str):
     print_field(field)    
     invalid_move = True
     while invalid_move:
-        print("Its " + player_name +  "'s turn")
+        print("Its " + player_name +  "'s Turn")
         player_input = get_player_input()
         invalid_move = set_stone(field,player_input,player_name)
     return "4" in winner_check(field)
@@ -149,21 +146,19 @@ def str_to_field(input_str:str):
         str_to_edit = str_to_edit[1:]
     return tmp
 
-IP = str(input("Please enter the server IP"))
-port = input("Please enter the games port")
+IP = str(input("Please Enter the Server IP"))
+port = int(input("Please Enter the Games port"))
 
 if IP == "":
     IP = '127.0.0.1'
 if port == "":
     port = 44844
-else:
-    port = int(port)
 
 client.init(IP,port)
 player_name = "O"
 std_empty = "x" #standart empty field char
 while True:
-    player_name = input("Enter a one-letter name for you: \n - ")
+    player_name = input("Input one Character long name for you: \n - ")
     if 0 > len(player_name) > 1:
         print("Wrong input")
     else:
@@ -178,13 +173,12 @@ while True:
         print_string = ""
         print_string += str(player_turn(player_name)) + ":"
         print_string += field_to_str(field)
-        client.send_data(print_string)
         if 'True' in print_string:
-            print("You are the winner")
+            print("You are the Winenr")
             break
-        
+        client.send_data(print_string)
     
-    print("Waiting for opponents turn")
+    print("Waiting for Oponends Turn")
     answer_string = client.answer()
     if 'lost' in answer_string:
         print("You have lost")
@@ -193,4 +187,6 @@ while True:
     first = True
 
 print(i)
-client.close_connection()  
+client.close_connection()
+  
+
