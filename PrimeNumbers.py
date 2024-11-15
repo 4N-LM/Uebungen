@@ -11,7 +11,7 @@ def test(num,i = 2):
         premium = True
     return premium
 
-print(test(21593))
+#print(test(10007))
 
 #for i in range(1, 20):
 #	if is_prime(i + 1):
@@ -24,11 +24,10 @@ def test_prime(num):
             return None
     return num
     
-#j = []
-#print(test_prime(21))
-#for i in range(100,1000):
- #   premiumm = test_prime(i)
-  #  if premiumm != None:
-   #     j.append(premiumm)
+j = []
+for i in range(100_000_00,100_002_00):
+   premiumm = test_prime(i)
+   if premiumm != None:
+       j.append(premiumm)
 
-#print (j)
+print (j)

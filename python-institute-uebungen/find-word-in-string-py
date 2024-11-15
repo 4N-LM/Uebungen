@@ -1,0 +1,13 @@
+word = input("Enter your Word ")
+random_str = input("Enter your random string ")
+tmp = random_str.find(word[0])
+complete = []
+for i in range(len(word)):
+    tmp = random_str.find(word[i],tmp)
+    if tmp != -1:
+        complete.append(tmp)
+if len(complete) == len(word):
+    print("Yes")
+else:
+    print("No")
+
