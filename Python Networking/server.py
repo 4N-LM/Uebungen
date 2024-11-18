@@ -48,8 +48,12 @@ while game:
             print(f"Data:\n {data.decode()}")
             client_socket2.send(data)
             print("Data sent to Client 2")
+        except (KeyboardInterrupt):
+            game = False
+            break
         except Exception as e:
             print(e)
+            break
     else:
         print("Player TWO's Turn")
         player_one_active = True
@@ -66,8 +70,12 @@ while game:
             print(f"Data:\n {data.decode()}")
             client_socket1.send(data)
             print("Data sent to Client 1")
+        except (KeyboardInterrupt):
+            game = False
+            break
         except Exception as e:
             print(e)
+            break
 
 
 
