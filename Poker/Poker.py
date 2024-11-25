@@ -1,8 +1,9 @@
 class Card:
-    def __init__(self,value:int,color:int,symbol:str): #value = value of the card: jack = 11, queen = 12 etc. color =  symbol of card: 1 = spade, 2 =  heard, 3 = diamond, 4 = clubs
+    def __init__(self,value:int,color:int,symbol:str,active:bool=False): #value = value of the card: jack = 11, queen = 12 etc. color =  symbol of card: 1 = spade, 2 =  heard, 3 = diamond, 4 = clubs
         self.value = value
         self.color = color
         self.symbol = symbol
+        self.active = active
     
     def __str__(self):
         return 'Value: ' + str(self.value) + ' Color: ' + str(self.color) + ' Symbol: '  + self.symbol 
@@ -43,7 +44,7 @@ def royal_flush_check(hand:list,field:list):
     
 
 
-def flush_check(hand:list,field:list):
+def flush_check(hand:list,field:list,output:bool=True):          #noch verbessern über sortierte liste statt einzeln!!
     counter = 1
     if hand[0].color == hand[1].color:
         counter +=1
@@ -61,35 +62,117 @@ def flush_check(hand:list,field:list):
         if tmp > counter:
             counter = tmp
     if counter >= 5:
+        if output:
+            print("flush!!")
         return True
     else:
         return False
 
-def straight_check(hand:list,field:list):
-    counter = 1
-    if hand[0].value == hand[1].value:
-        counter +=1
-        if hand[1].value == field[0].value:
-            counter +=1
-        for i in range(len(field) - 1):
-            if field[i] == field[i + 1]:
-                counter += 1
-    field.sort(key=lambda Card:Card.value)
+# def straight_check(hand:list,field:list):
+#     field.sort(key=lambda Card:Card.value)
+#     counter = 0
+#     if hand[0].value == hand[1].value:
+#         for i in range(len(field)):
+#             if hand[0].value == field[i].value or hand[1].value == field[i].value:
+#                 counter = straight_helper(field,i) + 2
+#                 break
+#     else:
+#         tmp = []
+#         for i in range(len(field)):
+#                 if hand[0].value == field[i].value or hand[1].value == field[i].value:
+#                     tmp.append(straight_helper(field,i) + 1)
+#         counter = max(tmp)
+#     if counter > 4:
+#         return True
+#     else:
+#         return False   
 
-def flush_helper(liste:list,start:int = 0):
-    counter = 0
-    if liste[start].value == liste[start + 1].value - 1:        
-        counter +=1
-        if start < len(liste) - 1:
-            counter += flush_helper(liste,start + 1)
-    return counter
+def straight_check(hand:list,field:list):
+    try_straight = hand + field     
+    try_straight = list(set(try_straight))
+    try_straight.sort(key=lambda Card:Card.value)
+    unique_list = []
+    seen_y_values = set()
+    for obj in try_straight:
+        if obj.value not in seen_y_values:
+            unique_list.append(obj)
+            seen_y_values.add(obj.value)      
+    try_straight = unique_list[:]
+   
+    counter = straight_helper(try_straight)
+    if counter > 4:
+        print("Straight!")
+        return True
+    else:
+        return False 
+    
+
+def straight_helper(liste:list):
+    counter = 1
+    tmp = []
+    for i in range(len(liste)):
+        try:
+            if liste[i].value == liste[i+1].value - 1:
+                counter +=1
+            else:                
+                counter = 1
+        except:
+            pass 
+        finally:
+            tmp.append(counter)
+    return max(tmp)
+
+def card_list_to_string(card_list:list):
+    tmp = ''
+    for i in range(len(card_list)):
+        tmp += str(card_list[i].value)
+        tmp += '\t'
+    return tmp
+
+def straight_flush_check(hand:list,field:list):
+    if straight_check(hand[:],field[:]) and flush_check(hand[:],field[:]):
+        print('Straight Flush!')
+        return True
+    else:
+        return False
+
+def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
+    another_list = hand + field
+    another_list.sort(key=lambda Card:Card.value)
+    tmp = []
+    for i in range(1,15):
+        try:
+            count = sum(1 for card in another_list if card.value == i)
+            tmp.append(count)
+        except:
+            pass
+    if max(tmp) == how_much_of_a_kind:
+        print(str(max(tmp)) + ' of a Kind')
+        return True
+    else:
+        return False
+    
        
 
 t = create_deck()
-händlich = [t.get('2'),t.get('5'),t.get('4'),t.get('3'),t.get('6')]
-händlich.sort(key=lambda Card:Card.value)
+testfeld = [t.get('2'),t.get('2'),t.get('2'),t.get('3'),t.get('4')]
+hand2 = [t.get('6'),t.get('8')]
+tmp = ''
+for i in range(len(hand2)):
+    tmp += str(hand2[i].value)
+    tmp +='\t'
+print('hand: ' + tmp)
+tmp = ''
+for i in range(len(testfeld)):
+    tmp += str(testfeld[i].value)
+    tmp +='\t'
+print('Feld: ' + tmp)
 
-print(flush_helper(händlich))
+
+
+
+
+print(any_of_a_kind(4,hand,testfeld))
 
 #for i in range(5):
     #print(str(händlich[i].value),händlich[i].symbol)
