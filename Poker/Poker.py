@@ -41,8 +41,6 @@ def create_deck():
 
 def royal_flush_check(hand:list,field:list):
     print("Lol")
-    
-
 
 def flush_check(hand:list,field:list,output:bool=True):          #noch verbessern über sortierte liste statt einzeln!!
     counter = 1
@@ -66,26 +64,7 @@ def flush_check(hand:list,field:list,output:bool=True):          #noch verbesser
             print("flush!!")
         return True
     else:
-        return False
-
-# def straight_check(hand:list,field:list):
-#     field.sort(key=lambda Card:Card.value)
-#     counter = 0
-#     if hand[0].value == hand[1].value:
-#         for i in range(len(field)):
-#             if hand[0].value == field[i].value or hand[1].value == field[i].value:
-#                 counter = straight_helper(field,i) + 2
-#                 break
-#     else:
-#         tmp = []
-#         for i in range(len(field)):
-#                 if hand[0].value == field[i].value or hand[1].value == field[i].value:
-#                     tmp.append(straight_helper(field,i) + 1)
-#         counter = max(tmp)
-#     if counter > 4:
-#         return True
-#     else:
-#         return False   
+        return False 
 
 def straight_check(hand:list,field:list):
     try_straight = hand + field     
@@ -105,7 +84,6 @@ def straight_check(hand:list,field:list):
         return True
     else:
         return False 
-    
 
 def straight_helper(liste:list):
     counter = 1
@@ -172,7 +150,7 @@ print('Feld: ' + tmp)
 
 
 
-print(any_of_a_kind(4,hand,testfeld))
+print(any_of_a_kind(4,hand2,testfeld))
 
 #for i in range(5):
     #print(str(händlich[i].value),händlich[i].symbol)
