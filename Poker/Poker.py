@@ -7,7 +7,8 @@ class Card:
     
     def __str__(self):
         return 'Value: ' + str(self.value) + ' Color: ' + str(self.color) + ' Symbol: '  + self.symbol 
-    
+
+
 def create_deck():
     tmp = []
     deck = {}
@@ -129,12 +130,10 @@ def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
         return True
     else:
         return False
-    
-       
 
 t = create_deck()
 testfeld = [t.get('2'),t.get('2'),t.get('2'),t.get('3'),t.get('4')]
-hand2 = [t.get('6'),t.get('8')]
+hand2 = [t.get('2'),t.get('8')]
 tmp = ''
 for i in range(len(hand2)):
     tmp += str(hand2[i].value)
