@@ -64,8 +64,8 @@ def send_pot(money:int):
 clients = serverConf()
 deck = Poker.create_deck()
 #Karten Verteilen
-for i in clients:
-   sendToSingle(send_hand(createCardSupset(2)))
+for i in range(len(clients)):
+   sendToSingle(send_hand(createCardSupset(2)),i)
 time.sleep(0.1)
 sendToAll(send_table(createCardSupset(5)))
 
