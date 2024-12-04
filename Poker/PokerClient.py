@@ -1,4 +1,11 @@
 import socket
+import tkinter as tk
+
+root = tk.Tk()
+root.title("Poker")
+image = tk.PhotoImage(file='Poker2.png')
+canvas = tk.Canvas(root, width=540, height=720)
+canvas.create_image(0,0,anchor='nw', image=image,)
 
 def init():
     host = input('Server IP:')
@@ -37,12 +44,25 @@ def close_connection():
     client_socket.close()
 
 init()
-while True:
-    x = answer()
-    if not x:
-        break
-    print(x)
+canvas.create_text(350, 300, text='LoremIpsum', tags='hand', font=("Arial", 120))
+canvas.pack()
+
+def update_text():
+    x = answer()  # Antwort vom Server als String
+    if x:
+        canvas.itemconfig('hand', text=x)
+        print(x)
+        # Funktion erneut nach 100ms aufrufen
+        root.after(100, update_text)
+    else:
+        print("Ende")
+        root.destroy()  # Fenster schließen, wenn keine Antwort mehr kommt
+
+root.after(100, update_text)  # Funktion nach 100ms starten
+
+# Tkinter-Hauptschleife
+root.mainloop()
 
 
-print('ende')
+
 close_connection()

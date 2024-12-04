@@ -8,6 +8,9 @@ class Card:
     def __str__(self):
         return 'Value: ' + str(self.value) + ' Color: ' + str(self.color) + ' Symbol: '  + self.symbol 
 
+    def __str__(self):
+        print("__str__")
+        return self.symbol
 
 def create_deck():
     tmp = []
@@ -131,28 +134,8 @@ def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
     else:
         return False
 
-t = create_deck()
-testfeld = [t.get('2'),t.get('2'),t.get('2'),t.get('3'),t.get('4')]
-hand2 = [t.get('2'),t.get('8')]
-tmp = ''
-for i in range(len(hand2)):
-    tmp += str(hand2[i].value)
-    tmp +='\t'
-print('hand: ' + tmp)
-tmp = ''
-for i in range(len(testfeld)):
-    tmp += str(testfeld[i].value)
-    tmp +='\t'
-print('Feld: ' + tmp)
 
+if __name__ == '__main__':
+    kartenspiel = create_deck()
 
-
-
-
-print(any_of_a_kind(4,hand2,testfeld))
-
-#for i in range(5):
-    #print(str(händlich[i].value),händlich[i].symbol)
-
-
-#print(flush_check([t.get('2'),t.get('3')],[t.get('4'),t.get('5'),t.get('6')]))
+    print(kartenspiel)

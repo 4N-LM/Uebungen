@@ -1,10 +1,11 @@
 import socket
 import Poker
+import random
+import time
 
 global deck
 global clients
-clients = []
-def selfInit():
+def serverConf():
     # Server konfigurieren
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = '0.0.0.0'
@@ -29,29 +30,48 @@ def selfInit():
         print(f"Verbindung {i + 1} zu {client_address} hergestellt")
 
         clients.append((client_socket, client_address))
-    print(clients)
     print("Alle Verbindungen hergestellt!")
-    deck = Poker.create_deck()
+    return clients
 
+def sendToAll(msg:str):
+    for i in range(len(clients)):
+        clients[i][0].send(msg.encode())
+
+def sendToSingle(msg:str,num:int):
+    clients[num][0].send(msg.encode())
+
+def createCardSupset(lengh:int = 2):
+    tmp = ''
+    for i in range(lengh):
+        while True:
+            x = str(random.randint(1,52))
+            if not deck.get(x).active:
+                tmp += deck.get(str(x)).symbol
+                deck.get(x).active = True
+                break
+    return tmp
+
+
+clients = serverConf()
+deck = Poker.create_deck()
 #Karten Verteilen
+for i in clients:
+    i[0].send(createCardSupset(2).encode())
 
-selfInit()
-
-print(clients)
+time.sleep(1)
+sendToAll('All')
+time.sleep(1)
+for i in range(len(clients) - 1):
+    sendToSingle(str(i),i)
 # Verbindungen verwalten oder schließen
 
 for client_socket, client_address in clients:
     client_socket.send(b"Willkommen auf dem Server!")
 
-print(clients)
-
-while True:
-    if not input("Nichts für weiter") == '':
-        break
 
 
 print("Ende")
 for client_socket, client_address in clients:
     client_socket.close()
-server_socket.close()
+#server_socket.close()
 
