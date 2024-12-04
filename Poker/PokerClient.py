@@ -22,7 +22,8 @@ def send_data(msg:str):
 def answer():
     try:
         while True:
-            data = client_socket.recv(1024)            
+            data = client_socket.recv(1024)   
+            print(data.decode())         
             if data.decode() != "":
                 tmp =data.decode().split(':')
                 if len(tmp) > 2 or len(tmp) < 2:
@@ -34,6 +35,7 @@ def answer():
         return False
     except(KeyError):
         print("Übertragungsfehler oder Server Kaput")
+        return False
     except:
         print("ein Fehler beim client")
 
