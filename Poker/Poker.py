@@ -7,7 +7,11 @@ class Card:
     
     def __str__(self):
         return 'Value: ' + str(self.value) + ' Color: ' + str(self.color) + ' Symbol: '  + self.symbol 
-    
+
+    def __str__(self):
+        print("__str__")
+        return self.symbol
+
 def create_deck():
     tmp = []
     deck = {}
@@ -41,8 +45,6 @@ def create_deck():
 
 def royal_flush_check(hand:list,field:list):
     print("Lol")
-    
-
 
 def flush_check(hand:list,field:list,output:bool=True):          #noch verbessern über sortierte liste statt einzeln!!
     counter = 1
@@ -66,26 +68,7 @@ def flush_check(hand:list,field:list,output:bool=True):          #noch verbesser
             print("flush!!")
         return True
     else:
-        return False
-
-# def straight_check(hand:list,field:list):
-#     field.sort(key=lambda Card:Card.value)
-#     counter = 0
-#     if hand[0].value == hand[1].value:
-#         for i in range(len(field)):
-#             if hand[0].value == field[i].value or hand[1].value == field[i].value:
-#                 counter = straight_helper(field,i) + 2
-#                 break
-#     else:
-#         tmp = []
-#         for i in range(len(field)):
-#                 if hand[0].value == field[i].value or hand[1].value == field[i].value:
-#                     tmp.append(straight_helper(field,i) + 1)
-#         counter = max(tmp)
-#     if counter > 4:
-#         return True
-#     else:
-#         return False   
+        return False 
 
 def straight_check(hand:list,field:list):
     try_straight = hand + field     
@@ -105,7 +88,6 @@ def straight_check(hand:list,field:list):
         return True
     else:
         return False 
-    
 
 def straight_helper(liste:list):
     counter = 1
@@ -151,31 +133,9 @@ def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
         return True
     else:
         return False
-    
-       
-
-t = create_deck()
-testfeld = [t.get('2'),t.get('2'),t.get('2'),t.get('3'),t.get('4')]
-hand2 = [t.get('6'),t.get('8')]
-tmp = ''
-for i in range(len(hand2)):
-    tmp += str(hand2[i].value)
-    tmp +='\t'
-print('hand: ' + tmp)
-tmp = ''
-for i in range(len(testfeld)):
-    tmp += str(testfeld[i].value)
-    tmp +='\t'
-print('Feld: ' + tmp)
 
 
+if __name__ == '__main__':
+    kartenspiel = create_deck()
 
-
-
-print(any_of_a_kind(4,hand,testfeld))
-
-#for i in range(5):
-    #print(str(händlich[i].value),händlich[i].symbol)
-
-
-#print(flush_check([t.get('2'),t.get('3')],[t.get('4'),t.get('5'),t.get('6')]))
+    print(kartenspiel)
