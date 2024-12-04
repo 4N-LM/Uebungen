@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49745c09-6c94-477d-b884-9e0817336bdd" name="Changes" comment="Poker Spaß" />
+    <list default="true" id="49745c09-6c94-477d-b884-9e0817336bdd" name="Changes" comment="Added Image">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,26 +46,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.ClientPoker.executor": "Run",
-    "Python.Kniffel.executor": "Run",
-    "Python.Poker.executor": "Run",
-    "Python.ServerForPoker.executor": "Run",
-    "Python.TKinter shit.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/LauridsMäntz/Documents/GitLab/studentcollection",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.ClientPoker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Kniffel.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Poker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ServerForPoker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TKinter shit.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/LauridsMäntz/Documents/GitLab/studentcollection&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Poker" />
@@ -126,6 +128,7 @@
       <workItem from="1733230098471" duration="7639000" />
       <workItem from="1733300138837" duration="7167000" />
       <workItem from="1733316056182" duration="7149000" />
+      <workItem from="1733326432085" duration="115000" />
     </task>
     <task id="LOCAL-00001" summary="3.12 Uni sync">
       <option name="closed" value="true" />
@@ -143,7 +146,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733325750908</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added Image">
+      <option name="closed" value="true" />
+      <created>1733326481803</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1733326481803</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,7 +163,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="3.12 Uni sync" />
     <MESSAGE value="Poker Spaß" />
-    <option name="LAST_COMMIT_MESSAGE" value="Poker Spaß" />
+    <MESSAGE value="Added Image" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Image" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Uebungen$ClientPoker.coverage" NAME="ClientPoker Coverage Results" MODIFIED="1733232413744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Poker" />
