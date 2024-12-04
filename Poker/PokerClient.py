@@ -39,10 +39,12 @@ def receive_data():
 def process_server_data(data):
     # Diese Funktion wird im Hauptthread aufgerufen und ändert die GUI
     
-    if data[0] in ['hand','table','pot','turn']:
+    if data[0] in ['hand','table','pot','turn',]:
         change_text(data[0],data[1])
         return
     match data[0]:
+        case 'get':
+            darfSenden = True
         case 'test':
             print(data[1])
         case 'exit':
@@ -68,8 +70,10 @@ def create_cklicki_bunti():
     button1.place(x=900, y=600)
 
 def send_data(msg:str):
-    data = msg
-    client_socket.send(data.encode())
+    if darfSenden:
+        data = msg
+        client_socket.send(data.encode())
+        darfSenden = False
 
 def change_text(tag:str,change: str):
     canvas.itemconfig(tag, text=change)
@@ -78,11 +82,14 @@ def close_connection():
     client_socket.close()
 
 # Hauptteil des Programms
+global darfSenden
+darfSenden = False
 init()
 
 global canvas
 global root
 global image
+
 
 root = tk.Tk()
 canvas = tk.Canvas(root, width=1080, height=720)

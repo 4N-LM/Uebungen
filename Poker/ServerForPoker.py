@@ -5,6 +5,7 @@ import time
 
 global deck
 global clients
+global pot
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def serverConf():
     # Server konfigurieren
@@ -35,12 +36,16 @@ def serverConf():
     print("Alle Verbindungen hergestellt!")
     return clients
 
-def sendToAll(msg:str):    
+def sendToAll(msg:str):
+    print(f'sending to all: {msg}') 
     for i in range(len(clients)):
         clients[i][int(0)].send(msg.encode())
+    time.sleep(0.2)
 
 def sendToSingle(msg:str,num:int):
+    print(f'sending to {num}: {msg}')
     clients[num][0].send(msg.encode())
+    time.sleep(0.2)
 
 def createCardSupset(lengh:int = 2):
     tmp = ''
@@ -78,6 +83,23 @@ def recive_Data(x:socket):
     except:
         print("ein Fehler beim client")
   
+def getting_all_bets(pot:int):
+    for j in range(len(clients)):
+        for i in range(len(clients)):
+            if clients[i][2]:
+                sendToAll('turn: Its ' + str(i) + ' Turn')
+                sendToAll(send_pot(pot))
+                sendToSingle('get:bet')
+                data = recive_Data(clients[i][0])
+                pot += (int(data[0]))
+                clients[i][2] = False
+                print(f'I: {i}')
+                if i == 1:      #(len(clients) - 1):
+                    clients[0][2] = True
+                else: 
+                    clients[i + 1 ][2] = True
+    print(pot)
+
 
 clients = serverConf()
 deck = Poker.create_deck()
@@ -90,40 +112,24 @@ for i in range(len(clients)):
 clients[0][2] = True
 #erste runde einsätze
 
-pot = []
-for j in range(len(clients)):
-    for i in range(len(clients)):
-        if clients[i][2]:
-            sendToAll('turn: Its ' + str(i) + ' Turn')
-            data = recive_Data(clients[i][0])
-            pot.append(int(data[0]))
-            clients[i][2] = False
-            clients[i + 1 if i < len(clients) - 2 else 0][2] = True
-print(pot)
+pot = 0
+getting_all_bets(pot)
 
 #ersten 3 Table Karten
 sendToAll(send_table(table))
 table += createCardSupset(1)
-input('A little wait')
 #zweite runde setzten
 
-pot = []
-for j in range(len(clients)):
-    for i in range(len(clients)):
-        if clients[i][2]:
-            data = recive_Data(clients[i][0])
-            pot.append(int(data[0]))
-            clients[i][2] = False
-            clients[i + 1 if i < len(clients) - 2 else 0][2] = True
-print(pot)
+getting_all_bets()
 
-# 4. Karte Table Karte
+sendToAll(send_table(table))
+table += createCardSupset(1)
 
-#dritte runde setzten
+getting_all_bets()
 
-# 5. Karte Table
+sendToAll(send_table(table))
 
-# vierte runde setzten
+getting_all_bets()
 
 #auswertung und Geldverteilen
 
