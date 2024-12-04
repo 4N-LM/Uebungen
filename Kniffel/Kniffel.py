@@ -2,7 +2,6 @@ import tkinter as tk
 import random
 
 window = tk.Tk()
-
             
 def create_dice_deck():
     loool = []
@@ -14,8 +13,8 @@ def create_dice_deck():
 def window_init():
     global window
     window.title('Ein Lustiges Vidget')
-    icon =  tk.PhotoImage(file=r'C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Testing\logo.png') 
-    window.iconphoto(True,icon)
+    #icon =  tk.PhotoImage(file=r'C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Testing\logo.png') 
+    #window.iconphoto(True,icon)
     window.config(background='black')
 
 window_init()
