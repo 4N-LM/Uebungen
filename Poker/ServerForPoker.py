@@ -89,7 +89,7 @@ def getting_all_bets(pot:int):
             if clients[i][2]:
                 sendToAll('turn: Its ' + str(i) + ' Turn')
                 sendToAll(send_pot(pot))
-                sendToSingle('get:bet')
+                sendToSingle('get:bet',i)
                 data = recive_Data(clients[i][0])
                 pot += (int(data[0]))
                 clients[i][2] = False

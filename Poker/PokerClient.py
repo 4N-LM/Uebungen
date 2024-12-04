@@ -1,7 +1,6 @@
 import socket
 import tkinter as tk
 import threading
-import time
 
 def init():
     host = input('Server IP:')
@@ -69,7 +68,7 @@ def create_cklicki_bunti():
     button1 = tk.Button(root, text='Hello', command=lambda: send_data('10'), font=('Arial', 50))
     button1.place(x=900, y=600)
 
-def send_data(msg:str):
+def send_data(msg:str,darf:bool=False):
     if darfSenden:
         data = msg
         client_socket.send(data.encode())
@@ -82,8 +81,7 @@ def close_connection():
     client_socket.close()
 
 # Hauptteil des Programms
-global darfSenden
-darfSenden = False
+global darfSenden; darfSenden = False
 init()
 
 global canvas
