@@ -5,9 +5,10 @@ import time
 
 global deck
 global clients
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def serverConf():
     # Server konfigurieren
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    global server_socket
     host = '0.0.0.0'
 
     # Port abfragen, Standard ist 44844
@@ -51,27 +52,33 @@ def createCardSupset(lengh:int = 2):
                 break
     return tmp
 
+def send_hand(cards:str):
+    return 'hand:' + cards
+
+def send_table(cards:str):
+    return 'table:' + cards
+
+def send_pot(money:int):
+    return 'pot:' + str(money)
 
 clients = serverConf()
 deck = Poker.create_deck()
 #Karten Verteilen
 for i in clients:
-    i[0].send(createCardSupset(2).encode())
+   sendToSingle(send_hand(createCardSupset(2)))
+time.sleep(0.1)
+sendToAll(send_table(createCardSupset(5)))
 
-time.sleep(1)
-sendToAll('All')
-time.sleep(1)
-for i in range(len(clients) - 1):
-    sendToSingle(str(i),i)
-# Verbindungen verwalten oder schließen
+time.sleep(3)
 
-for client_socket, client_address in clients:
-    client_socket.send(b"Willkommen auf dem Server!")
+#for client_socket, client_address in clients:
+ #   client_socket.send(b"Willkommen auf dem Server!")
 
 
-
+sendToAll('exit:exit')
 print("Ende")
 for client_socket, client_address in clients:
     client_socket.close()
-#server_socket.close()
+server_socket.close()
+print('Alles Beendet')
 
