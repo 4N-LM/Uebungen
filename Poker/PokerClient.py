@@ -38,6 +38,8 @@ def receive_data():
 def process_server_data(data):
     # Diese Funktion wird im Hauptthread aufgerufen und ändert die GUI
     
+    global darfSenden
+    
     if data[0] in ['hand','table','pot','turn',]:
         change_text(data[0],data[1])
         return
@@ -65,11 +67,11 @@ def create_cklicki_bunti():
     canvas.pack()    
     canvas.create_text(900, 450, text=str(0), tags='money', font=("Arial", 50))
     canvas.pack()
-    button1 = tk.Button(root, text='Hello', command=lambda: send_data('10'), font=('Arial', 50))
+    button1 = tk.Button(root, text='Hello', command=lambda: send_data('10',darfSenden), font=('Arial', 50))
     button1.place(x=900, y=600)
 
 def send_data(msg:str,darf:bool=False):
-    if darfSenden:
+    if darf:
         data = msg
         client_socket.send(data.encode())
         darfSenden = False

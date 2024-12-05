@@ -1,6 +1,6 @@
 import socket
 import tkinter as tk
-import time
+import threading
 
 def init():
     host = input('Server IP:')
@@ -16,97 +16,89 @@ def init():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
 
+# Funktion zum Empfangen von Daten aus dem Server
+def receive_data():
+    while True:
+        try:
+            data = client_socket.recv(1024)   
+            if data.decode() != "":
+                tmp = data.decode().split(':')
+                if len(tmp) == 2:
+                    # Daten an die Haupt-GUI weitergeben
+                    root.after(0, process_server_data, tmp)
+                else:
+                    print('Falsche Länge der Antwort vom Server:', tmp)
+        except (KeyboardInterrupt, ConnectionResetError):
+            print("Verbindung zum Server wurde getrennt.")
+            break
+        except Exception as e:
+            print(f"Fehler beim Empfangen von Daten: {e}")
+            break
+
+def process_server_data(data):
+    # Diese Funktion wird im Hauptthread aufgerufen und ändert die GUI
+    global darfSenden  # Zugriff auf die globale Variable
+    
+    if data[0] in ['hand','table','pot','turn',]:
+        change_text(data[0],data[1])
+        return
+    match data[0]:
+        case 'get':
+            darfSenden = True  # Erlaube das Senden von Daten
+        case 'test':
+            print(data[1])
+        case 'exit':
+            close_connection()
+            root.destroy()
+        case _:
+            print('Unklare Antwort vom Server')
+
 def create_cklicki_bunti():
     root.title("Poker")        
-    canvas.create_image(0,0,anchor='nw', image=image,)
+    canvas.create_image(0, 0, anchor='nw', image=image)
     canvas.create_text(500, 360, text='LoremIpsum', tags='table', font=("Arial", 120))
     canvas.pack()
     canvas.create_text(200, 650, text='LoremIpsum', tags='hand', font=("Arial", 120))
     canvas.pack()
     canvas.create_text(900, 100, text='LoremIpsum', tags='pot', font=("Arial", 50))
     canvas.pack()
-    button1 = tk.Button(root,text='Hello',command=lambda:send_data('10'),font=('Arial',50))
-    button1.place(x=900,y=600)
+    canvas.create_text(350, 100, text='LoremIpsum', tags='turn', font=("Arial", 50))
+    canvas.pack()    
+    canvas.create_text(900, 450, text=str(0), tags='money', font=("Arial", 50))
+    canvas.pack()
+    button1 = tk.Button(root, text='Hello', command=lambda: send_data('10'), font=('Arial', 50))
+    button1.place(x=900, y=600)
 
-def send_data(msg:str='Hello there'):    
-    data = msg
-    client_socket.send(data.encode())
+def send_data(msg: str):
+    global darfSenden  # Zugriff auf die globale Variable
+    if darfSenden:
+        data = msg
+        client_socket.send(data.encode())
+        darfSenden = False  # Senden wieder deaktivieren
 
-def answer(test:bool=False):
-    if not test:
-        try:
-            while True:
-                print('reciving: \n\n')
-                data = client_socket.recv(1024)   
-                if data.decode() != "":
-                    tmp =data.decode().split(':')
-                    if len(tmp) != 2:
-                        print('Falsche länge: ' + tmp)
-                        raise KeyError
-                    else:
-                        return tmp
-        except(KeyboardInterrupt):
-            send_data('Exit')
-            return False
-        except(KeyError):
-            print("Übertragungsfehler oder Server Kaput")
-            return False
-        except:
-            print("ein Fehler beim client")
-    else:
-        time.sleep(3)
-        return ['test','test']
-
-def func():
-    root.destroy()
-
+def change_text(tag: str, change: str):
+    canvas.itemconfig(tag, text=change)
+    
 def close_connection():
     client_socket.close()
 
-def change_hand(change:str):
-    canvas.itemconfig('hand', text=change)
-    
-def change_table(change:str):
-    canvas.itemconfig('table',text=change)
-    
-def change_pot(change:str):
-    canvas.itemconfig('pot',text=change)
+# Hauptteil des Programms
+global darfSenden
+darfSenden = False  # Initialwert
 
 init()
+
 global canvas
 global root
 global image
+
 root = tk.Tk()
-canvas = canvas = tk.Canvas(root, width=1080, height=720)
+canvas = tk.Canvas(root, width=1080, height=720)
 image = tk.PhotoImage(file='Poker2.png')
 create_cklicki_bunti()
 
-def update_text():
-    x = answer()        # Antwort vom Server als Liste aus 2 Strings
-    match x[0]:
-        case 'hand':
-            change_hand(x[1])
-        case 'table':
-            change_table(x[1])
-        case 'pot':
-            change_pot(x[1])
-        case 'test':
-            print(x[1])
-        case 'exit':
-            close_connection()
-            root.destroy()
-            return False
-        case _:
-            print('Unklare Antwort vom Server')
-    root.update_idletasks()    
-             
-       
+# Starte den Empfang von Daten im separaten Thread
+receive_thread = threading.Thread(target=receive_data, daemon=True)
+receive_thread.start()
 
-root.after(100, update_text)  # Funktion nach 100ms starten
-print('Here')
-# Tkinter-Hauptschleife
 root.mainloop()
-
-
-
-close_connection()
