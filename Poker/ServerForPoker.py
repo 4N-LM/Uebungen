@@ -28,11 +28,12 @@ def serverConf():
     # Verbindungen annehmen
     clients=[]
     activePlayer = False
+    name = 'John'
     for i in range(number_of_players):
         client_socket, client_address = server_socket.accept()
         print(f"Verbindung {i + 1} zu {client_address} hergestellt")
 
-        clients.append(list((client_socket, client_address, activePlayer)))
+        clients.append(list((client_socket, client_address, activePlayer, name)))
     print("Alle Verbindungen hergestellt!")
     return clients
 
@@ -40,12 +41,12 @@ def sendToAll(msg:str):
     print(f'sending to all: {msg}') 
     for i in range(len(clients)):
         clients[i][int(0)].send(msg.encode())
-    time.sleep(0.2)
+    time.sleep(0.4)
 
 def sendToSingle(msg:str,num:int):
     print(f'sending to {num}: {msg}')
     clients[num][0].send(msg.encode())
-    time.sleep(0.2)
+    time.sleep(0.4)
 
 def createCardSupset(lengh:int = 2):
     tmp = ''
@@ -68,68 +69,88 @@ def send_pot(money:int):
     return 'pot:' + str(money)
 
 def recive_Data(x:socket):
+    x.send('get:get'.encode())
     try:
         while True:
             data = x.recv(1024)   
             if data.decode() != "":
-                tmp =data.decode().split(':')
+                tmp:list =data.decode().split(':')
+                print(tmp)
                 return tmp
     except(KeyboardInterrupt):
         print('Why?')
-        return 'Null'
+        return ['Null']
     except(KeyError):
         print("Übertragungsfehler oder Server Kaput")
-        return 'Null'
-    except:
+        return ['Null']
+    except Exception as e:
+        print(e)
         print("ein Fehler beim client")
+        return ['Null']
   
-def getting_all_bets(pot:int):
-    for j in range(len(clients)):
+def getting_all_bets():
+    bet = 10
+    clientsInOrder =  []  
+    if len(clients) < 2:
+        sendToSingle('turn:' + clients[0][3],0)
+        sendToAll(send_pot(bet))
+        return int(recive_Data(clients[0][0])[0])
+      
+    for j in range(2):
         for i in range(len(clients)):
-            if clients[i][2]:
-                sendToAll('turn: Its ' + str(i) + ' Turn')
-                sendToAll(send_pot(pot))
-                sendToSingle('get:bet',i)
-                data = recive_Data(clients[i][0])
-                pot += (int(data[0]))
-                clients[i][2] = False
-                print(f'I: {i}')
-                if i == 1:      #(len(clients) - 1):
-                    clients[0][2] = True
-                else: 
-                    clients[i + 1 ][2] = True
-    print(pot)
+                if clients[i][2] and clients[i] not in clientsInOrder:
+                    clientsInOrder.append(clients[i])
+                    clients[i][2] = False
+                    if clients[i] == clients[-1]:
+                        clients[0][2] = True
+                    else:
+                        clients[i + 1][2] = True
+                    
+    for i in range(len(clientsInOrder) - 1):
+        sendToAll('turn:' + clients[i][3])
+        sendToAll(send_pot(bet))
+        sendToSingle('get:bet',i)
+        data = recive_Data(clientsInOrder[i][0])
+        print(data[0])
+        bet = int(data[0])
+        pot += (int(data[0]))
+        clients[i][2] = False
+        print(f'I: {i}')
+    return pot   
 
 
 clients = serverConf()
+active_player = clients[:]
 deck = Poker.create_deck()
 table = createCardSupset(3)
 #Karten Verteilen
 for i in range(len(clients)):
     sendToSingle(send_hand(createCardSupset(2)),i)
-    time.sleep(0.1)
+    sendToSingle('name:name',i)
+    clients[i][3] = recive_Data(clients[i][0])[0]
+    print(clients[i][3])
 
 clients[0][2] = True
 #erste runde einsätze
 
 pot = 0
-getting_all_bets(pot)
+pot += getting_all_bets()
 
 #ersten 3 Table Karten
 sendToAll(send_table(table))
 table += createCardSupset(1)
 #zweite runde setzten
 
-getting_all_bets()
+pot += getting_all_bets()
 
 sendToAll(send_table(table))
 table += createCardSupset(1)
 
-getting_all_bets()
+pot += getting_all_bets()
 
 sendToAll(send_table(table))
 
-getting_all_bets()
+pot += getting_all_bets()
 
 #auswertung und Geldverteilen
 
