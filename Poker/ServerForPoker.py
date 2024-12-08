@@ -88,38 +88,41 @@ def recive_Data(x:socket):
         print("ein Fehler beim client")
         return ['Null']
   
-def getting_all_bets():
+def getting_all_bets(pot:int):
     bet = 10
     clientsInOrder =  []  
-    if len(clients) < 2:
-        sendToSingle('turn:' + clients[0][3],0)
+    if len(active_player) < 2:
+        print('Single')
+        sendToSingle('turn:' + active_player[0][3],0)
         sendToAll(send_pot(bet))
-        return int(recive_Data(clients[0][0])[0])
-      
+        return int(recive_Data(active_player[0][0])[0])
+             
     for j in range(2):
-        for i in range(len(clients)):
-                if clients[i][2] and clients[i] not in clientsInOrder:
-                    clientsInOrder.append(clients[i])
-                    clients[i][2] = False
-                    if clients[i] == clients[-1]:
-                        clients[0][2] = True
+        for i in range(len(active_player)):
+                if active_player[i][2] and active_player[i] not in clientsInOrder:
+                    clientsInOrder.append(active_player[i])
+                    active_player[i][2] = False
+                    if active_player[i] == active_player[-1]:
+                        active_player[0][2] = True
                     else:
-                        clients[i + 1][2] = True
-                    
-    for i in range(len(clientsInOrder) - 1):
-        sendToAll('turn:' + clients[i][3])
+                        active_player[i + 1][2] = True
+
+    for i in range(len(clientsInOrder)  ):
+        sendToAll('turn:' + clientsInOrder[i][3])
         sendToAll(send_pot(bet))
         sendToSingle('get:bet',i)
         data = recive_Data(clientsInOrder[i][0])
         print(data[0])
         bet = int(data[0])
+        if bet == 0:
+            active_player.remove(clientsInOrder[i])
         pot += (int(data[0]))
         clients[i][2] = False
         print(f'I: {i}')
     return pot   
 
-
 clients = serverConf()
+
 active_player = clients[:]
 deck = Poker.create_deck()
 table = createCardSupset(3)
@@ -129,29 +132,30 @@ for i in range(len(clients)):
     sendToSingle('name:name',i)
     clients[i][3] = recive_Data(clients[i][0])[0]
     print(clients[i][3])
-
+    
 clients[0][2] = True
-#erste runde einsätze
 
+#erste runde einsätze
 pot = 0
-pot += getting_all_bets()
+pot += getting_all_bets(pot)
 
 #ersten 3 Table Karten
 sendToAll(send_table(table))
 table += createCardSupset(1)
+
+input()
+
 #zweite runde setzten
-
-pot += getting_all_bets()
-
+print
+pot += getting_all_bets(pot)
 sendToAll(send_table(table))
 table += createCardSupset(1)
 
-pot += getting_all_bets()
-
+#dritte runde setzten
+pot += getting_all_bets(pot)
 sendToAll(send_table(table))
 
-pot += getting_all_bets()
-
+pot += getting_all_bets(pot)
 #auswertung und Geldverteilen
 
 #sendToAll(send_table(createCardSupset(5)))

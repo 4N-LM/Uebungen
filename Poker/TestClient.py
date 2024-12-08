@@ -1,4 +1,5 @@
 import socket
+import threading
 
 def init():
     host = input('Server IP:')
@@ -10,23 +11,25 @@ def init():
         port = '44844'
     port = int(port)
 
-    global client_socket
+     
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
+    return client_socket
 
-def send_data(msg:str):    
-    data = msg
-    client_socket.send(data.encode())
+def send_data():
+    while True: 
+        data = input("Input data to send: \n")
+        client.send(data.encode())
 
 def answer():
     try:
         while True:
-            data = client_socket.recv(1024)
+            data = client.recv(1024)
             if data.decode() != "":
-                return data.decode()
+                print(data)
             if data.decode().lower() == "exit":
                 close_connection()
-                return False
+                
     except(KeyboardInterrupt):
         send_data('Exit')
         return False
@@ -34,15 +37,13 @@ def answer():
         print("ein Fehler beim client")
 
 def close_connection():
-    client_socket.close()
+    client.close()
 
-init()
-while True:
-    x = answer()
-    if not x:
-        break
-    print(x)
+client = init()
 
+receive_thread = threading.Thread(target=answer, daemon=True)
+receive_thread.start()
+send_data()
 
 print('ende')
 close_connection()

@@ -50,7 +50,6 @@ while True:
         break
     print(tmp)
 
-
 sendToSingle('exit:exit')
 print("Ende")
 x[0].close()
