@@ -1,4 +1,2 @@
-while True:
-    tmp = input('Hello:' )
-    print(len(tmp))
-    print( -1 < len(tmp) <= 1)
+x = ['a','b','c']
+print(x.index('c'))

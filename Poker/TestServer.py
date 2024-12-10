@@ -44,6 +44,8 @@ def recive_Data():
         return ['Null']
 
 x = serverConf()
+sendToSingle('mony:1000')
+time.sleep(5)
 while True:
     tmp = recive_Data()[0]
     if tmp == 'Null':

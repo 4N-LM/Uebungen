@@ -3,9 +3,34 @@ import Poker
 import random
 import time
 
+class Player:
+    def __init__(self,socket:socket,address):
+        self.address = address
+        self.name = 'John'
+        self.socket = socket
+        self.hand = ''
+        self.money = 0
+        self.bet = 0
+        self.activePlayer = False
+        
+    def __eq__(self, other):
+        return self.name == other.name
+    
+    def __str__(self):
+        tmp = 'Name: ' + self.name + ', Money: ' + str(self.money) + ', Active: ' + str(self.activePlayer)
+        return tmp
+    
+    def __hash__(self):
+        return hash((self.name,self.socket,self.hand,self.money,self.bet,self.activePlayer))
+
+    def send(self,msg:str):
+        self.socket.send(msg.encode())
+        time.sleep(0.1)
+
 global deck
 global clients
 global pot
+global Test
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def serverConf():
     # Server konfigurieren
@@ -18,7 +43,8 @@ def serverConf():
         port = 44844
     else:
         port = int(port)
-
+    if port == 44444:
+        Test = True
     # Anzahl der Spieler festlegen
     number_of_players = int(input("Enter the number of players: "))
     server_socket.bind((host, port))
@@ -27,25 +53,24 @@ def serverConf():
 
     # Verbindungen annehmen
     clients=[]
-    activePlayer = False
-    name = 'John'
+    
     for i in range(number_of_players):
         client_socket, client_address = server_socket.accept()
         print(f"Verbindung {i + 1} zu {client_address} hergestellt")
-
-        clients.append(list((client_socket, client_address, activePlayer, name)))
+        x:Player = Player(client_socket,client_address)
+        clients.append(x)
     print("Alle Verbindungen hergestellt!")
     return clients
 
 def sendToAll(msg:str):
     print(f'sending to all: {msg}') 
     for i in range(len(clients)):
-        clients[i][int(0)].send(msg.encode())
+        clients[i].send(msg)
     time.sleep(0.4)
 
-def sendToSingle(msg:str,num:int):
-    print(f'sending to {num}: {msg}')
-    clients[num][0].send(msg.encode())
+def sendToSingle(msg:str,player:Player):
+    print(f'sending: {msg} to {player.name}')
+    player.send(msg)
     time.sleep(0.4)
 
 def createCardSupset(lengh:int = 2):
@@ -68,14 +93,18 @@ def send_table(cards:str):
 def send_pot(money:int):
     return 'pot:' + str(money)
 
-def recive_Data(x:socket):
-    x.send('get:get'.encode())
+def send_bet(money:int):
+    return 'bet:' + str(money)
+
+def recive_Data(player:Player):
+    x = player.socket
+    sendToSingle('get:get',player)
     try:
         while True:
             data = x.recv(1024)   
             if data.decode() != "":
                 tmp:list =data.decode().split(':')
-                print(tmp)
+                print(f'\t\t\t From {player.name} resived: {tmp[0]}')
                 return tmp
     except(KeyboardInterrupt):
         print('Why?')
@@ -87,89 +116,121 @@ def recive_Data(x:socket):
         print(e)
         print("ein Fehler beim client")
         return ['Null']
-  
-def getting_all_bets(pot:int):
-    bet = 10
-    clientsInOrder =  []  
-    if len(active_player) < 2:
-        print('Single')
-        sendToSingle('turn:' + active_player[0][3],0)
-        sendToAll(send_pot(bet))
-        return int(recive_Data(active_player[0][0])[0])
-             
+
+def gettingSingleBet(bet:int,player:Player):
+    sendToAll('turn:' + player.name)
+    sendToAll(send_bet(bet))
+    data = recive_Data(player)[0]
+    return int(data)
+
+def gettingClientsInOrder():
+    tmp = []
     for j in range(2):
         for i in range(len(active_player)):
-                if active_player[i][2] and active_player[i] not in clientsInOrder:
-                    clientsInOrder.append(active_player[i])
-                    active_player[i][2] = False
+                if active_player[i].activePlayer and active_player[i] not in tmp:
+                    tmp.append(active_player[i])
+                    active_player[i].activePlayer = False
                     if active_player[i] == active_player[-1]:
-                        active_player[0][2] = True
+                        active_player[0].activePlayer = True
                     else:
-                        active_player[i + 1][2] = True
+                        active_player[i + 1].activePlayer = True
+    return tmp
 
-    for i in range(len(clientsInOrder)  ):
-        sendToAll('turn:' + clientsInOrder[i][3])
-        sendToAll(send_pot(bet))
-        sendToSingle('get:bet',i)
-        data = recive_Data(clientsInOrder[i][0])
-        print(data[0])
-        bet = int(data[0])
-        if bet == 0:
-            active_player.remove(clientsInOrder[i])
-        pot += (int(data[0]))
-        clients[i][2] = False
-        print(f'I: {i}')
-    return pot   
+def checkAllSameBets(allPlayer:list):
+    tmp = False
+    for i in range(len(allPlayer)):
+        if allPlayer[0] == allPlayer[i]:
+            tmp = True
+        else:
+            tmp = False
+            break
+    return tmp
 
+def gettingAllBets(pot:int):
+    bet = 10
+    clientsInOrder =  []  
+    sendToAll(send_pot(pot))
+    if len(active_player) < 2:
+        bet = gettingSingleBet(bet,active_player[0])
+        clients[0].money -= bet
+        sendToSingle('mony:' + str(active_player[0].money),active_player[0])
+        pot += bet
+        return pot
+        
+    clientsInOrder = gettingClientsInOrder()    
+    allBetsUnequal = True
+    while allBetsUnequal:
+        for i in range(len(clientsInOrder)):
+            if len(clientsInOrder) == 1:
+                bet = clientsInOrder[0].bet
+                break
+            bet = gettingSingleBet(bet,clientsInOrder[i])
+            clientsInOrder[i].bet = bet
+            if bet == 0:
+                clientsInOrder[i].money -= bet
+                active_player.remove(clientsInOrder[i])
+                clientsInOrder.pop(i)           
+                
+        if len(active_player) > 2:
+            allBetsUnequal = not checkAllSameBets(active_player)
+        else:
+            break
+            
+    for i in active_player:
+        pot += bet
+        i.money -= bet
+        i.send('mony:' + str(i.money))
+    return pot
+
+Test = False
 clients = serverConf()
+sendToAll('mony:2000')
+for i in clients:
+    i.send('name:name')
+    i.name = recive_Data(i)[0]   
+    i.money=2000
 
-active_player = clients[:]
-deck = Poker.create_deck()
-table = createCardSupset(3)
-#Karten Verteilen
-for i in range(len(clients)):
-    sendToSingle(send_hand(createCardSupset(2)),i)
-    sendToSingle('name:name',i)
-    clients[i][3] = recive_Data(clients[i][0])[0]
-    print(clients[i][3])
+while True:
+    active_player = clients[:]
+    deck = Poker.create_deck()
+    table = createCardSupset(3)
+
+    for i in active_player:
+        i.hand = createCardSupset(2)
+        i.send(send_hand(i.hand))
+        i.bet = 0                            
     
-clients[0][2] = True
+    clients[0].activePlayer = True
 
-#erste runde einsätze
-pot = 0
-pot += getting_all_bets(pot)
+    pot = 0
+    pot += gettingAllBets(pot)  #runde eins
 
-#ersten 3 Table Karten
-sendToAll(send_table(table))
-table += createCardSupset(1)
+    sendToAll(send_table(table))
+    table += createCardSupset(1)
 
-input()
+    pot += gettingAllBets(pot)  #runde zwei
+    sendToAll(send_table(table))
+    table += createCardSupset(1)
 
-#zweite runde setzten
-print
-pot += getting_all_bets(pot)
-sendToAll(send_table(table))
-table += createCardSupset(1)
+    pot += gettingAllBets(pot)  #runde drei
+    sendToAll(send_table(table))
 
-#dritte runde setzten
-pot += getting_all_bets(pot)
-sendToAll(send_table(table))
+    pot += gettingAllBets(pot)  #runde vier
 
-pot += getting_all_bets(pot)
-#auswertung und Geldverteilen
-
-#sendToAll(send_table(createCardSupset(5)))
-
-#time.sleep(3)
-
-#for client_socket, client_address in clients:
- #   client_socket.send(b"Willkommen auf dem Server!")
-
+    #auswertung und Geldverteilen
+    if len(active_player) == 1:
+        active_player[0].money += pot
+        sendToSingle('mony:' + str(active_player[0].money),active_player[0])
+        sendToAll('info:Winnder is ' + active_player[0].name)
+        time.sleep(7)
+        
+    if input("Again? : - ").lower() not in ['yes','y','j','jes','yo']:
+        break
 
 sendToAll('exit:exit')
 print("Ende")
 for i in range(len(clients)):
-    clients[i][0].close()
+    clients[i].socket.close()
 server_socket.close()
 print('Alles Beendet')
 
