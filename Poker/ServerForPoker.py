@@ -4,9 +4,9 @@ import random
 import time
 
 class Player:
-    def __init__(self,socket:socket,address):
+    def __init__(self,socket:socket,address,num:int):
         self.address = address
-        self.name = 'John'
+        self.name = 'John' + str(num)
         self.socket = socket
         self.hand = ''
         self.money = 0
@@ -36,7 +36,7 @@ def serverConf():
     # Server konfigurieren
     global server_socket
     host = '0.0.0.0'
-
+    Test = False
     # Port abfragen, Standard ist 44844
     port = input("Please enter a port (if empty, it's <44844>): ")
     if port == "":
@@ -44,7 +44,7 @@ def serverConf():
     else:
         port = int(port)
     if port == 44444:
-        Test = True
+        Test = True        
     # Anzahl der Spieler festlegen
     number_of_players = int(input("Enter the number of players: "))
     server_socket.bind((host, port))
@@ -57,10 +57,10 @@ def serverConf():
     for i in range(number_of_players):
         client_socket, client_address = server_socket.accept()
         print(f"Verbindung {i + 1} zu {client_address} hergestellt")
-        x:Player = Player(client_socket,client_address)
+        x:Player = Player(client_socket,client_address,i)
         clients.append(x)
     print("Alle Verbindungen hergestellt!")
-    return clients
+    return (clients,Test)
 
 def sendToAll(msg:str):
     print(f'sending to all: {msg}') 
@@ -121,7 +121,10 @@ def gettingSingleBet(bet:int,player:Player):
     sendToAll('turn:' + player.name)
     sendToAll(send_bet(bet))
     data = recive_Data(player)[0]
-    return int(data)
+    if data != 'fold':
+        return int(data)
+    else:
+        return
 
 def gettingClientsInOrder():
     tmp = []
@@ -147,15 +150,20 @@ def checkAllSameBets(allPlayer:list):
     return tmp
 
 def gettingAllBets(pot:int):
-    bet = 10
+    bet = 0
+    if pot == 0:
+        bet = 10
     clientsInOrder =  []  
     sendToAll(send_pot(pot))
     if len(active_player) < 2:
-        bet = gettingSingleBet(bet,active_player[0])
-        clients[0].money -= bet
-        sendToSingle('mony:' + str(active_player[0].money),active_player[0])
-        pot += bet
-        return pot
+        if Test:
+            bet = gettingSingleBet(bet,active_player[0])
+            clients[0].money -= bet
+            sendToSingle('mony:' + str(active_player[0].money),active_player[0])
+            pot += bet
+            return pot
+        else:
+            return pot
         
     clientsInOrder = gettingClientsInOrder()    
     allBetsUnequal = True
@@ -165,11 +173,12 @@ def gettingAllBets(pot:int):
                 bet = clientsInOrder[0].bet
                 break
             bet = gettingSingleBet(bet,clientsInOrder[i])
-            clientsInOrder[i].bet = bet
-            if bet == 0:
-                clientsInOrder[i].money -= bet
+            if bet == -1:
+                print('Fold')
                 active_player.remove(clientsInOrder[i])
-                clientsInOrder.pop(i)           
+                clientsInOrder.pop(i)
+                continue
+            clientsInOrder[i].bet = bet        
                 
         if len(active_player) > 2:
             allBetsUnequal = not checkAllSameBets(active_player)
@@ -183,7 +192,20 @@ def gettingAllBets(pot:int):
     return pot
 
 Test = False
-clients = serverConf()
+conf = serverConf()
+clients = conf[0]
+Test = conf[1]
+if Test:
+    print('''
+        ___________     _________       ________        ___________
+             |          |               |                    |
+             |          |               |                    |
+             |          |_____          |_______             |
+             |          |                       |            |
+             |          |                       |            |
+             |          |________       ________|            |
+              
+              ''')
 sendToAll('mony:2000')
 for i in clients:
     i.send('name:name')
@@ -221,7 +243,7 @@ while True:
     if len(active_player) == 1:
         active_player[0].money += pot
         sendToSingle('mony:' + str(active_player[0].money),active_player[0])
-        sendToAll('info:Winnder is ' + active_player[0].name)
+        sendToAll('info:Winner is ' + active_player[0].name)
         time.sleep(7)
         
     if input("Again? : - ").lower() not in ['yes','y','j','jes','yo']:

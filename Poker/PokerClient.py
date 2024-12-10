@@ -90,7 +90,7 @@ def create_cklicki_bunti():
     canvas.pack()
     button1 = tk.Button(root, text='Rise', command=lambda: send_data(canvas.itemcget('selfbet','text') if canvas.itemcget('selfbet','text') >= canvas.itemcget('bet','text') else canvas.itemcget('bet','text')), font=('Arial', 50))
     button1.place(x=700, y=600)
-    button2 = tk.Button(root, text='Fold', command=lambda: send_data('0'), font=('Arial', 50))
+    button2 = tk.Button(root, text='Fold', command=lambda: send_data('-1'), font=('Arial', 50))
     button2.place(x=900, y=600)
     button3 = tk.Button(root, text='+', command=lambda: change_text('selfbet',str(int(canvas.itemcget('selfbet','text')) + 10) if int(canvas.itemcget('selfbet','text')) + 10 <= int(canvas.itemcget('mony','text')) else int(canvas.itemcget('mony','text'))), font=('Arial', 50))
     button3.place(x=630, y=500)
