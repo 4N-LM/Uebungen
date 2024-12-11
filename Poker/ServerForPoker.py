@@ -191,6 +191,21 @@ def gettingAllBets(pot:int):
         i.send('mony:' + str(i.money))
     return pot
 
+def finalEvaluation(players:list):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
 Test = False
 conf = serverConf()
 clients = conf[0]
@@ -245,8 +260,10 @@ while True:
         sendToSingle('mony:' + str(active_player[0].money),active_player[0])
         sendToAll('info:Winner is ' + active_player[0].name)
         time.sleep(7)
+    else:
+        winner = finalEvaluation(active_player)
         
-    if input("Again? : - ").lower() not in ['yes','y','j','jes','yo']:
+    if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
 
 sendToAll('exit:exit')

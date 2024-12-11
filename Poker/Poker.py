@@ -1,3 +1,4 @@
+from random import randint
 class Card:
     def __init__(self,value:int,color:int,symbol:str,active:bool=False): #value = value of the card: jack = 11, queen = 12 etc. color =  symbol of card: 1 = spade, 2 =  heard, 3 = diamond, 4 = clubs
         self.value = value
@@ -7,10 +8,6 @@ class Card:
     
     def __str__(self):
         return 'Value: ' + str(self.value) + ' Color: ' + str(self.color) + ' Symbol: '  + self.symbol 
-
-    def __str__(self):
-        print("__str__")
-        return self.symbol
 
 def create_deck():
     tmp = []
@@ -45,6 +42,16 @@ def create_deck():
 
 def royal_flush_check(hand:list,field:list):
     print("Lol")
+
+def FullHouse(hand:list,field:list):
+    x = any_of_a_kind(3,hand,field)
+    y = any_of_a_kind(2,hand,field)
+    print(x)
+    print(y)
+    if x[0][0] and y[0][0]:
+        if x[0][2] != y[0][2] or  x[0][2] != y[1][2] or x[1][2] != y[0][2] or x[1][2] != y[1][2] or x[0][2] != y[2][2]:
+            return True
+    return False
 
 def flush_check(hand:list,field:list,output:bool=True):          #noch verbessern über sortierte liste statt einzeln!!
     counter = 1
@@ -122,20 +129,35 @@ def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
     another_list = hand + field
     another_list.sort(key=lambda Card:Card.value)
     tmp = []
-    for i in range(1,15):
+    for i in range(1, 15):
         try:
             count = sum(1 for card in another_list if card.value == i)
-            tmp.append(count)
-        except:
+            tmp.append((count, i))
+        except Exception as e:
             pass
-    if max(tmp) == how_much_of_a_kind:
-        print(str(max(tmp)) + ' of a Kind')
-        return True
-    else:
-        return False
+        
+    tmptmp = []
+    for i in tmp:
+        if i[0] == how_much_of_a_kind:
+            tmptmp.append((True,) + i)
+    return tmptmp    
 
+def createHand(listeee:list):
+    tmp = []
+    for i in range(2):
+        tmp.append(kartenspiel.get(str(listeee[i])))
+        print(f'Hand {i} ' + str(kartenspiel.get(str(listeee[i]))))
+    return tmp[:]
+        
+def createTable(listeeee:list):
+    tmp = []
+    for i in range(5):
+        tmp.append(kartenspiel.get(str(listeeee[i])))
+        print(f'Table {i} ' + str(kartenspiel.get(str(listeeee[i]))))
+    return tmp[:]
 
 if __name__ == '__main__':
     kartenspiel = create_deck()
-
-    print(kartenspiel)
+    x = createHand([1,1])
+    y = createTable([2,2,3,3,3])
+    print(FullHouse(x,y))
