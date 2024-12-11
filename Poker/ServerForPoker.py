@@ -143,10 +143,12 @@ def gettingClientsInOrder():
 def checkAllSameBets(allPlayer:list):
     tmp = False
     for i in range(len(allPlayer)):
-        if allPlayer.bet == allPlayer.bet:
+        if allPlayer[0].bet == allPlayer[i].bet:
             tmp = True
+            print('True')
         else:
             tmp = False
+            print('False')
             break
     return tmp
 
@@ -181,7 +183,7 @@ def gettingAllBets(pot:int):
                 continue
             clientsInOrder[i].bet = bet        
                 
-        if len(active_player) > 2:
+        if len(active_player) > 1:
             allBetsUnequal = not checkAllSameBets(active_player)
         else:
             break
@@ -192,9 +194,15 @@ def gettingAllBets(pot:int):
         i.send('mony:' + str(i.money))
     return pot
 
+def StringToList(string:str):
+    tmp = []
+    for i in string:
+        tmp.append(i)
+    return tmp
+
 def finalEvaluation(players:list):
     for i in players:
-        i.score = Poker.highestCheck(i.hand,table)
+        i.score = Poker.highestCheck(StringToList(i.hand),StringToList(table))
     return max(players, key=lambda Player:Player.score)
 
 Test = False
@@ -250,13 +258,11 @@ while True:
         active_player[0].money += pot
         sendToSingle('mony:' + str(active_player[0].money),active_player[0])
         sendToAll('info:Winner is ' + active_player[0].name)
-        time.sleep(7)
     else:
         winner = finalEvaluation(active_player)
         winner.money += pot
         sendToSingle('mony:' + str(winner.money,winner))
         sendToAll('info:Winner is ' + winner.name)
-        time.sleep(7)
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
