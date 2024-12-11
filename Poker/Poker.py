@@ -41,13 +41,24 @@ def create_deck():
     return deck
 
 def royal_flush_check(hand:list,field:list):
-    print("Lol")
+    tmp = hand + field
+    print(type(tmp))
+    tmp.sort(key=lambda Card:Card.value)
+    symbols = []
+    for i in tmp:
+        symbols.append(i.symbol)
+    a = ['🂪','🂫','🂭','🂮','🂡']
+    b = ['🂺','🂻','🂽','🂾','🂱']
+    c = ['🃊','🃋','🃍','🃎','🃁']
+    d = ['🃚','🃛','🃝','🃞','🃑']
+    if set(a).issubset(symbols) or set(b).issubset(symbols) or set(c).issubset(symbols) or set(d).issubset(symbols): 
+        print('Royal Flush!!')
+        return True
+    return False
 
 def FullHouse(hand:list,field:list):
     x = any_of_a_kind(3,hand,field)
     y = any_of_a_kind(2,hand,field)
-    print(x)
-    print(y)
     if x[0][0] and y[0][0]:
         if x[0][2] != y[0][2] or  x[0][2] != y[1][2] or x[1][2] != y[0][2] or x[1][2] != y[1][2] or x[0][2] != y[2][2]:
             return True
@@ -71,8 +82,6 @@ def flush_check(hand:list,field:list,output:bool=True):          #noch verbesser
         if tmp > counter:
             counter = tmp
     if counter >= 5:
-        if output:
-            print("flush!!")
         return True
     else:
         return False 
@@ -125,6 +134,12 @@ def straight_flush_check(hand:list,field:list):
     else:
         return False
 
+def twoPair(hand:list,field:list):
+    x = any_of_a_kind(2,hand,field)
+    if x > 1 :
+        return True
+    return False
+
 def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
     another_list = hand + field
     another_list.sort(key=lambda Card:Card.value)
@@ -134,13 +149,16 @@ def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
             count = sum(1 for card in another_list if card.value == i)
             tmp.append((count, i))
         except Exception as e:
-            pass
+            print('Fehler: ' + str(e))
         
     tmptmp = []
     for i in tmp:
         if i[0] == how_much_of_a_kind:
             tmptmp.append((True,) + i)
-    return tmptmp    
+    if len(tmptmp) > 0 :
+        return tmptmp
+    else:
+        return [(False,)]    
 
 def createHand(listeee:list):
     tmp = []
@@ -153,11 +171,41 @@ def createTable(listeeee:list):
     tmp = []
     for i in range(5):
         tmp.append(kartenspiel.get(str(listeeee[i])))
-        print(f'Table {i} ' + str(kartenspiel.get(str(listeeee[i]))))
+        print(f'Table {i} ' + str(kartenspiel.get(str(listeeee[i])).symbol))
     return tmp[:]
+
+def highestCheck(hand:list,table:list):
+    print('Royal')
+    if royal_flush_check(hand,table):
+        return 10
+    print('StraightFlush')
+    if straight_flush_check(hand,table):
+        return 9
+    print('4 of a ')
+    if any_of_a_kind(4,hand,table)[0][0]:
+        return 8
+    print('Full House')
+    if FullHouse(hand,table):
+        return 7
+    print('Flush')
+    if flush_check(hand,table,False):
+        return 6
+    print('straight')
+    if straight_check(hand,table):
+        return 5
+    print('3 of a ')
+    if any_of_a_kind(3,hand,table)[0][0]:
+        return 4
+    if twoPair(hand,table):
+        return 3
+    if any_of_a_kind(2,hand,table)[0][0]:
+        return 2
+    return 1
 
 if __name__ == '__main__':
     kartenspiel = create_deck()
-    x = createHand([1,1])
-    y = createTable([2,2,3,3,3])
-    print(FullHouse(x,y))
+    x = createHand([2,4])
+    y = createTable([6,8,10,50,51])
+    print(any_of_a_kind(4,x,y))
+    print('Highest: ' + str(highestCheck(x,y)))
+    

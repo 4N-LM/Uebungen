@@ -12,6 +12,7 @@ class Player:
         self.money = 0
         self.bet = 0
         self.activePlayer = False
+        self.score = 0
         
     def __eq__(self, other):
         return self.name == other.name
@@ -142,7 +143,7 @@ def gettingClientsInOrder():
 def checkAllSameBets(allPlayer:list):
     tmp = False
     for i in range(len(allPlayer)):
-        if allPlayer[0] == allPlayer[i]:
+        if allPlayer.bet == allPlayer.bet:
             tmp = True
         else:
             tmp = False
@@ -192,19 +193,9 @@ def gettingAllBets(pot:int):
     return pot
 
 def finalEvaluation(players:list):
-    pass
-
-
-
-
-
-
-
-
-
-
-
-
+    for i in players:
+        i.score = Poker.highestCheck(i.hand,table)
+    return max(players, key=lambda Player:Player.score)
 
 Test = False
 conf = serverConf()
@@ -240,19 +231,19 @@ while True:
     clients[0].activePlayer = True
 
     pot = 0
-    pot += gettingAllBets(pot)  #runde eins
+    pot = gettingAllBets(pot)  #runde eins
 
     sendToAll(send_table(table))
     table += createCardSupset(1)
 
-    pot += gettingAllBets(pot)  #runde zwei
+    pot = gettingAllBets(pot)  #runde zwei
     sendToAll(send_table(table))
     table += createCardSupset(1)
 
-    pot += gettingAllBets(pot)  #runde drei
+    pot = gettingAllBets(pot)  #runde drei
     sendToAll(send_table(table))
 
-    pot += gettingAllBets(pot)  #runde vier
+    pot = gettingAllBets(pot)  #runde vier
 
     #auswertung und Geldverteilen
     if len(active_player) == 1:
@@ -262,6 +253,10 @@ while True:
         time.sleep(7)
     else:
         winner = finalEvaluation(active_player)
+        winner.money += pot
+        sendToSingle('mony:' + str(winner.money,winner))
+        sendToAll('info:Winner is ' + winner.name)
+        time.sleep(7)
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
