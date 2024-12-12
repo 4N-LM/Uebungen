@@ -125,7 +125,7 @@ def gettingSingleBet(bet:int,player:Player):
     if data != 'fold':
         return int(data)
     else:
-        return
+        return -99999
 
 def gettingClientsInOrder():
     tmp = []
@@ -145,10 +145,8 @@ def checkAllSameBets(allPlayer:list):
     for i in range(len(allPlayer)):
         if allPlayer[0].bet == allPlayer[i].bet:
             tmp = True
-            print('True')
         else:
             tmp = False
-            print('False')
             break
     return tmp
 
@@ -175,12 +173,16 @@ def gettingAllBets(pot:int):
             if len(clientsInOrder) == 1:
                 bet = clientsInOrder[0].bet
                 break
+            
             bet = gettingSingleBet(bet,clientsInOrder[i])
+            
+                
             if bet == -1:
                 print('Fold')
                 active_player.remove(clientsInOrder[i])
                 clientsInOrder.pop(i)
-                continue
+                bet = clientsInOrder[i]
+                break
             clientsInOrder[i].bet = bet        
                 
         if len(active_player) > 1:
@@ -308,10 +310,10 @@ while True:
                 tmp += i.name + ' '
             sendToAll('info:Winner is ' + tmp)
         else:
-            winner.money += pot
-            print('Winner: ' + winner.name)
-            sendToSingle('mony:' + str(winner.money),winner)
-            sendToAll('info:Winner is ' + winner.name + ' with ' + str(winner.score))
+            winner[0].money += pot
+            print('Winner: ' + winner[0].name)
+            sendToSingle('mony:' + str(winner[0].money),winner[0])
+            sendToAll('info:Winner is ' + winner[0].name + ' with ' + str(winner[0].score[0]))
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
