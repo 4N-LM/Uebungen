@@ -208,25 +208,39 @@ def cardlistToString(listee:list):
         tmp += i.symbol
     return tmp
 
-def finalEvaluation(players:list):
-    for i in players:
-        i.score = Poker.highestCheck(i.hand,table)
-    
-    highest = [players[0]]
-    for i in players:
+def evalHelper(winners:list,depth:int):
+    highest = [winners[0]]
+    for i in winners:
         if i == highest:
             continue
         else:
-            if i.score > highest.score:
+            if i.score[depth] > highest.score[depth]:
                 highest.clear
                 highest[0] = i
             if i.score == highest.score:
                 highest.append(i)
+    return highest
+
+def finalEvaluation(players:list):
+    for i in players:
+        i.score = Poker.highestCheck(i.hand,table)
     
-    if len(highest) == 1:
-        return highest
-            
-    return max(players, key=lambda Player:Player.score)
+    x = evalHelper(players,0)
+    if len(x) > 1:
+        x = evalHelper(x,1)
+        if len(x) >1:
+            x = evalHelper(x,2)
+            if len(x) >1:
+                y = ''
+                for i in x:
+                    y += i.name
+                return tuple(y)
+            else:
+                return (x[0].name,)
+        else:
+            return (x[0].name,)
+    else:
+        return (x[0].name,)
 
 Test = False
 conf = serverConf()
@@ -285,10 +299,19 @@ while True:
         sendToAll('info:Winner is ' + active_player[0].name)
     else:
         winner = finalEvaluation(active_player)
-        winner.money += pot
-        print('Winner: ' + winner.name)
-        sendToSingle('mony:' + str(winner.money),winner)
-        sendToAll('info:Winner is ' + winner.name + ' with ' + str(winner.score))
+        if len(winner) > 1:
+            moneten = pot // len(winner)
+            tmp:str = ""
+            for i in winner:
+                i.money += moneten
+                sendToSingle('mony:' + str(i.money),i)
+                tmp += i.name + ' '
+            sendToAll('info:Winner is ' + tmp)
+        else:
+            winner.money += pot
+            print('Winner: ' + winner.name)
+            sendToSingle('mony:' + str(winner.money),winner)
+            sendToAll('info:Winner is ' + winner.name + ' with ' + str(winner.score))
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break

@@ -13,17 +13,17 @@ def init():
         port = '44844'
     port = int(port)
     
-    name = get_input(15,'Deinen Namen Bitte(2-15 Buchstaben): - ',str,2)
+    name = get_input(15,'Deinen Namen Bitte(2-15 Buchstaben): - ',str,2,unwanted={"split"})
 
     global client_socket
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
     return name
 
-def get_input(max:int,text:str,datatype:type,min:int=1):
+def get_input(max:int,text:str,datatype:type,unwanted:set={'   '},min:int=1):
     while True:
         tmp = input(text)
-        if (min < len(tmp) <= max or len(tmp) == 0) and type(tmp) == datatype:
+        if (min < len(tmp) <= max or len(tmp) == 0) and type(tmp) == datatype and tmp not in unwanted:
             break
         else:
             print('Flascher input: Try again\n')

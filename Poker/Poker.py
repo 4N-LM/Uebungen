@@ -1,4 +1,3 @@
-from random import randint
 class Card:
     def __init__(self,value:int,color:int,symbol:str,active:bool=False): #value = value of the card: jack = 11, queen = 12 etc. color =  symbol of card: 1 = spade, 2 =  heard, 3 = diamond, 4 = clubs
         self.value = value
@@ -42,7 +41,6 @@ def create_deck():
 
 def royal_flush_check(hand:list,field:list):
     tmp = hand + field
-    print(type(tmp))
     tmp.sort(key=lambda Card:Card.value)
     symbols = []
     for i in tmp:
@@ -61,8 +59,9 @@ def FullHouse(hand:list,field:list):
     y = any_of_a_kind(2,hand,field)
     if x[0][0] and y[0][0]:
         if x[0][2] != y[0][2] or  x[0][2] != y[1][2] or x[1][2] != y[0][2] or x[1][2] != y[1][2] or x[0][2] != y[2][2]:
-            if y[0][2] < y[1][2]:
-                y[0] = y[1]           
+            if len(y) > 1:
+                if y[0][2] < y[1][2]:
+                    y[0] = y[1]           
             return (True, x[0][2], y[0][2])
     return (False,)
 
@@ -89,10 +88,10 @@ def flush_check(hand:list,field:list,output:bool=True):          #noch verbesser
         counter = (counter,hand[1].value)
         if tmp[0] > counter[0]:
             counter = tmp
-    if counter >= 5:
-        return True
+    if counter[0] >= 5:
+        return (True,counter[1])  
     else:
-        return False 
+        return (False,) 
 
 def straight_check(hand:list,field:list):
     try_straight = hand + field     
@@ -108,7 +107,6 @@ def straight_check(hand:list,field:list):
    
     counter = straight_helper(try_straight)
     if counter[0] > 4:
-        print("Straight!")
         return (True,counter[1])
     else:
         return (False,)
@@ -125,9 +123,7 @@ def straight_helper(liste:list):
         except:
             pass 
         finally:
-            print(counter)
             tmp.append((counter,liste[i].value + 1)) #Value + 1 because starighthelper cant give you the highest of a Staright else
-    print(tmp)
     return max(tmp,key=lambda tmp:tmp[0])
 
 def card_list_to_string(card_list:list):
@@ -138,19 +134,31 @@ def card_list_to_string(card_list:list):
     return tmp
 
 def straight_flush_check(hand:list,field:list):
-    x = straight_check(hand,field)
-
-    if x[0] and flush_check(hand[:],field[:]):
-        print('Straight Flush!')
-        return True
-    else:
-        return False
+    tmp = hand + field
+    tmptmp = []
+    y = flush_check(hand,field)
+    if flush_check(hand,field)[0]:  
+        for i in range(4):
+            for j in tmp:
+                if j.color == i:
+                    tmptmp.append(j)
+            if len(tmptmp) > 4:
+                break 
+        tmptmp.sort(key=lambda Card:Card.value)
+        x = straight_helper(tmptmp)
+        if x[0] > 4:
+            return(True,x[1])   
+    return (False,)
 
 def twoPair(hand:list,field:list):
     x = any_of_a_kind(2,hand,field)
-    if len(x) > 1 :
-        return True
-    return False
+    if len(x) > 1 :        
+        if x[0][2] > x[1][2]:
+            a = (x[0][2],x[1][2])
+        if x[0][2] < x[1][2]:
+            a = (x[1][2],x[0][2])
+        return (True,) + a
+    return (False,)
 
 def any_of_a_kind(how_much_of_a_kind:int,hand:list,field:list):
     another_list = hand + field
@@ -197,16 +205,15 @@ def highestCheck(hand,table):
         hand = StringToList(hand)
     if type(table) == str:
         table = StringToList(table)
-    print('Hand: ' + str(hand))
-    print('Table: ' + str(table))
-
-
-    print('Royal') #######
+        
+    print('Royal')
     if royal_flush_check(hand,table):
         return (10,None,None)
-    print('StraightFlush')######
-    if straight_flush_check(hand,table):
-        return 9
+    
+    print('StraightFlush')
+    x = straight_flush_check(hand,table)
+    if x[0]:
+        return (9,x[1],15)
     
     print('4 of a ')
     x = any_of_a_kind(4,hand,table) 
@@ -218,30 +225,33 @@ def highestCheck(hand,table):
     if x[0]:
         return (7,x[1],x[2])
     
-    print('Flush')######
-    if flush_check(hand,table,False):
-        return 6
+    print('Flush')
+    x = flush_check(hand,table,False)
+    if x[0]:
+        return (6,x[1],15)
     
-    print('straight')######
+    print('straight')
     x = straight_check(hand,table) 
     if x[0]:
         return (5,x[1],15)
         
-    print('3 of a ')#####
-    if any_of_a_kind(3,hand,table)[0][0]:
-        return 4
+    print('3 of a ')
+    x = any_of_a_kind(3,hand,table) 
+    if x[0][0]:
+        return (4,x[0][2],15)
     
-    if twoPair(hand,table):
-        return 3
+    x = twoPair(hand,table) 
+    if x[0]:
+        return (3,x[1],x[2])
     
-    if any_of_a_kind(2,hand,table)[0][0]:
-        return 2
-    return 1
+    x = any_of_a_kind(2,hand,table) 
+    if x[0][0]:
+        return (2,x[0][2],15)
+    return (1,15,15)
 
 if __name__ == '__main__':
     kartenspiel = create_deck()
     x = createHand([1,14])
-    y = createTable([28,29,30,31,32,34,35,37])
-    print(straight_helper(y))
-    print(any_of_a_kind(4,x,y))
-    
+    y = createTable([27,28,29,50,51])
+    #print(flush_check(x,y,False))
+    print(highestCheck(x,y))
