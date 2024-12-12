@@ -61,8 +61,10 @@ def FullHouse(hand:list,field:list):
     y = any_of_a_kind(2,hand,field)
     if x[0][0] and y[0][0]:
         if x[0][2] != y[0][2] or  x[0][2] != y[1][2] or x[1][2] != y[0][2] or x[1][2] != y[1][2] or x[0][2] != y[2][2]:
-            return True
-    return False
+            if y[0][2] < y[1][2]:
+                y[0] = y[1]           
+            return (True, x[0][2], y[0][2])
+    return (False,)
 
 def flush_check(hand:list,field:list,output:bool=True):          #noch verbessern über sortierte liste statt einzeln!!
     counter = 1
@@ -71,15 +73,21 @@ def flush_check(hand:list,field:list,output:bool=True):          #noch verbesser
         for i in range(len(field)):
             if hand[0].color == field[i].color:
                 counter +=1
+        x = hand[0].value
+        if hand[0].value < hand[1].value:
+            x = hand[1].value
+        counter = (counter,x)
     else:
         tmp = 1
         for i in range(len(field)):
             if hand[0].color == field[i].color:
                 tmp +=1
+        tmp = (tmp,hand[0].value)
         for i in range(len(field)):
             if hand[1].color == field[i].color:
                 counter +=1
-        if tmp > counter:
+        counter = (counter,hand[1].value)
+        if tmp[0] > counter[0]:
             counter = tmp
     if counter >= 5:
         return True
@@ -99,11 +107,11 @@ def straight_check(hand:list,field:list):
     try_straight = unique_list[:]
    
     counter = straight_helper(try_straight)
-    if counter > 4:
+    if counter[0] > 4:
         print("Straight!")
-        return True
+        return (True,counter[1])
     else:
-        return False 
+        return (False,)
 
 def straight_helper(liste:list):
     counter = 1
@@ -117,8 +125,10 @@ def straight_helper(liste:list):
         except:
             pass 
         finally:
-            tmp.append(counter)
-    return max(tmp)
+            print(counter)
+            tmp.append((counter,liste[i].value + 1)) #Value + 1 because starighthelper cant give you the highest of a Staright else
+    print(tmp)
+    return max(tmp,key=lambda tmp:tmp[0])
 
 def card_list_to_string(card_list:list):
     tmp = ''
@@ -128,7 +138,9 @@ def card_list_to_string(card_list:list):
     return tmp
 
 def straight_flush_check(hand:list,field:list):
-    if straight_check(hand[:],field[:]) and flush_check(hand[:],field[:]):
+    x = straight_check(hand,field)
+
+    if x[0] and flush_check(hand[:],field[:]):
         print('Straight Flush!')
         return True
     else:
@@ -136,7 +148,7 @@ def straight_flush_check(hand:list,field:list):
 
 def twoPair(hand:list,field:list):
     x = any_of_a_kind(2,hand,field)
-    if x > 1 :
+    if len(x) > 1 :
         return True
     return False
 
@@ -169,43 +181,67 @@ def createHand(listeee:list):
         
 def createTable(listeeee:list):
     tmp = []
-    for i in range(5):
+    for i in range(len(listeeee)):
         tmp.append(kartenspiel.get(str(listeeee[i])))
         print(f'Table {i} ' + str(kartenspiel.get(str(listeeee[i])).symbol))
     return tmp[:]
 
-def highestCheck(hand:list,table:list):
-    print('Royal')
+def StringToList(eingang:str):
+    tmp = []
+    for i in eingang:
+        tmp.append(i)
+    return tmp
+
+def highestCheck(hand,table):
+    if type(hand) == str:
+        hand = StringToList(hand)
+    if type(table) == str:
+        table = StringToList(table)
+    print('Hand: ' + str(hand))
+    print('Table: ' + str(table))
+
+
+    print('Royal') #######
     if royal_flush_check(hand,table):
-        return 10
-    print('StraightFlush')
+        return (10,None,None)
+    print('StraightFlush')######
     if straight_flush_check(hand,table):
         return 9
+    
     print('4 of a ')
-    if any_of_a_kind(4,hand,table)[0][0]:
-        return 8
+    x = any_of_a_kind(4,hand,table) 
+    if x[0][0]:
+        return (8,x[0][2],15)
+    
     print('Full House')
-    if FullHouse(hand,table):
-        return 7
-    print('Flush')
+    x = FullHouse(hand,table) 
+    if x[0]:
+        return (7,x[1],x[2])
+    
+    print('Flush')######
     if flush_check(hand,table,False):
         return 6
-    print('straight')
-    if straight_check(hand,table):
-        return 5
-    print('3 of a ')
+    
+    print('straight')######
+    x = straight_check(hand,table) 
+    if x[0]:
+        return (5,x[1],15)
+        
+    print('3 of a ')#####
     if any_of_a_kind(3,hand,table)[0][0]:
         return 4
+    
     if twoPair(hand,table):
         return 3
+    
     if any_of_a_kind(2,hand,table)[0][0]:
         return 2
     return 1
 
 if __name__ == '__main__':
     kartenspiel = create_deck()
-    x = createHand([2,4])
-    y = createTable([6,8,10,50,51])
+    x = createHand([1,14])
+    y = createTable([28,29,30,31,32,34,35,37])
+    print(straight_helper(y))
     print(any_of_a_kind(4,x,y))
-    print('Highest: ' + str(highestCheck(x,y)))
     

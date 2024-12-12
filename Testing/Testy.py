@@ -1,4 +1,5 @@
-x = ['a','f','b']
-y = ['1','a','b','c','d']
-is_subset = set(x).issubset(y)
-print(is_subset)  # Gibt True aus
+x = (1,2)
+b = x
+print(b)
+x = (1,2,3)
+print(b)

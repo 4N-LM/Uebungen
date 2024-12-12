@@ -75,12 +75,12 @@ def sendToSingle(msg:str,player:Player):
     time.sleep(0.4)
 
 def createCardSupset(lengh:int = 2):
-    tmp = ''
+    tmp = []
     for i in range(lengh):
         while True:
             x = str(random.randint(1,52))
             if not deck.get(x).active:
-                tmp += deck.get(str(x)).symbol
+                tmp.append(deck.get(str(x)))
                 deck.get(x).active = True
                 break
     return tmp
@@ -189,20 +189,43 @@ def gettingAllBets(pot:int):
             break
             
     for i in active_player:
-        pot += bet
-        i.money -= bet
+        print('Player: ' + i.name + '\nBet: ' + str(i.bet) + '\nPot: ' + str(pot))
+        pot += i.bet
+        i.money -= i.bet
         i.send('mony:' + str(i.money))
+    print('Pot Bevore Return: ' + str(pot))
     return pot
 
-def StringToList(string:str):
+def stringToList(string:str):
     tmp = []
     for i in string:
         tmp.append(i)
     return tmp
 
+def cardlistToString(listee:list):
+    tmp = ''
+    for i in listee:
+        tmp += i.symbol
+    return tmp
+
 def finalEvaluation(players:list):
     for i in players:
-        i.score = Poker.highestCheck(StringToList(i.hand),StringToList(table))
+        i.score = Poker.highestCheck(i.hand,table)
+    
+    highest = [players[0]]
+    for i in players:
+        if i == highest:
+            continue
+        else:
+            if i.score > highest.score:
+                highest.clear
+                highest[0] = i
+            if i.score == highest.score:
+                highest.append(i)
+    
+    if len(highest) == 1:
+        return highest
+            
     return max(players, key=lambda Player:Player.score)
 
 Test = False
@@ -227,13 +250,15 @@ for i in clients:
     i.money=2000
 
 while True:
+    sendToAll(send_table(''))
+    sendToAll('info: ')
     active_player = clients[:]
     deck = Poker.create_deck()
     table = createCardSupset(3)
 
     for i in active_player:
         i.hand = createCardSupset(2)
-        i.send(send_hand(i.hand))
+        i.send(send_hand(cardlistToString(i.hand)))
         i.bet = 0                            
     
     clients[0].activePlayer = True
@@ -241,15 +266,15 @@ while True:
     pot = 0
     pot = gettingAllBets(pot)  #runde eins
 
-    sendToAll(send_table(table))
+    sendToAll(send_table(cardlistToString(table)))
     table += createCardSupset(1)
 
     pot = gettingAllBets(pot)  #runde zwei
-    sendToAll(send_table(table))
+    sendToAll(send_table(cardlistToString(table)))
     table += createCardSupset(1)
 
     pot = gettingAllBets(pot)  #runde drei
-    sendToAll(send_table(table))
+    sendToAll(send_table(cardlistToString(table)))
 
     pot = gettingAllBets(pot)  #runde vier
 
@@ -261,8 +286,9 @@ while True:
     else:
         winner = finalEvaluation(active_player)
         winner.money += pot
-        sendToSingle('mony:' + str(winner.money,winner))
-        sendToAll('info:Winner is ' + winner.name)
+        print('Winner: ' + winner.name)
+        sendToSingle('mony:' + str(winner.money),winner)
+        sendToAll('info:Winner is ' + winner.name + ' with ' + str(winner.score))
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
