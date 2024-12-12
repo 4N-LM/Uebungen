@@ -211,13 +211,13 @@ def cardlistToString(listee:list):
 def evalHelper(winners:list,depth:int):
     highest = [winners[0]]
     for i in winners:
-        if i == highest:
+        if i == highest[0]:
             continue
         else:
-            if i.score[depth] > highest.score[depth]:
+            if i.score[depth] > highest[0].score[depth]:
                 highest.clear
                 highest[0] = i
-            if i.score == highest.score:
+            if i.score == highest[0].score:
                 highest.append(i)
     return highest
 
@@ -233,14 +233,14 @@ def finalEvaluation(players:list):
             if len(x) >1:
                 y = ''
                 for i in x:
-                    y += i.name
+                    y += i
                 return tuple(y)
             else:
-                return (x[0].name,)
+                return (x[0],)
         else:
-            return (x[0].name,)
+            return (x[0],)
     else:
-        return (x[0].name,)
+        return (x[0],)
 
 Test = False
 conf = serverConf()

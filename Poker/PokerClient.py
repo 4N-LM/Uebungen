@@ -97,7 +97,7 @@ def create_cklicki_bunti():
     button4 = tk.Button(root, text='-', command=lambda: change_text('selfbet',str(int(canvas.itemcget('selfbet','text')) - 10)) if int(canvas.itemcget('selfbet','text')) > 10 else 10 , font=('Arial', 50))
     button4.place(x=870, y=500)
     button1 = tk.Button(root, text='Call', command=lambda: send_data(canvas.itemcget('bet','text')), font=('Arial', 50))
-    button1.place(x=600, y=600)
+    button1.place(x=550, y=600)
     
 def send_data(msg: str):
     global darfSenden  # Zugriff auf die globale Variable
@@ -105,6 +105,7 @@ def send_data(msg: str):
         data = msg
         client_socket.send(data.encode())
         darfSenden = False      # Senden wieder deaktivieren
+        change_text('selfbet','30')
         wait(0.4)
 
 def change_text(tag: str, change: str):

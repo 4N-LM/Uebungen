@@ -206,36 +206,29 @@ def highestCheck(hand,table):
     if type(table) == str:
         table = StringToList(table)
         
-    print('Royal')
     if royal_flush_check(hand,table):
         return (10,None,None)
     
-    print('StraightFlush')
     x = straight_flush_check(hand,table)
     if x[0]:
         return (9,x[1],15)
     
-    print('4 of a ')
     x = any_of_a_kind(4,hand,table) 
     if x[0][0]:
         return (8,x[0][2],15)
     
-    print('Full House')
     x = FullHouse(hand,table) 
     if x[0]:
         return (7,x[1],x[2])
     
-    print('Flush')
     x = flush_check(hand,table,False)
     if x[0]:
         return (6,x[1],15)
     
-    print('straight')
     x = straight_check(hand,table) 
     if x[0]:
         return (5,x[1],15)
-        
-    print('3 of a ')
+
     x = any_of_a_kind(3,hand,table) 
     if x[0][0]:
         return (4,x[0][2],15)
