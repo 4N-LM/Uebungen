@@ -181,7 +181,7 @@ def gettingAllBets(pot:int):
                 print('Fold')
                 active_player.remove(clientsInOrder[i])
                 clientsInOrder.pop(i)
-                bet = clientsInOrder[i]
+                bet = clientsInOrder[i].bet
                 break
             clientsInOrder[i].bet = bet        
                 
