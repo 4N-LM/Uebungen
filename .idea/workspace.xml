@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49745c09-6c94-477d-b884-9e0817336bdd" name="Changes" comment="Added Image">
+      <change afterPath="$PROJECT_DIR$/Testing/Testy2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Poker/Poker.py" beforeDir="false" afterPath="$PROJECT_DIR$/Poker/Poker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Poker/ServerForPoker.py" beforeDir="false" afterPath="$PROJECT_DIR$/Poker/ServerForPoker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Testing/Testy.py" beforeDir="false" afterPath="$PROJECT_DIR$/Testing/Testy.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,16 +50,18 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python tests.Doctests in Testy.executor": "Run",
     "Python.ClientPoker.executor": "Run",
     "Python.Kniffel.executor": "Run",
     "Python.Poker.executor": "Debug",
     "Python.ServerForPoker.executor": "Run",
     "Python.TKinter shit.executor": "Run",
+    "Python.Testy2.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/LauridsMäntz/Documents/GitLab/studentcollection",
+    "last_opened_file_path": "C:/Users/LauridsMäntz/Documents/GitHub/Uebungen/Testing",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -71,13 +72,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Testing" />
       <recent name="C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Poker" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\LauridsMäntz\Documents\GitHub\Uebungen\Poker" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Poker">
+  <component name="RunManager" selected="Python.Testy2">
     <configuration name="Poker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Uebungen" />
       <option name="ENV_FILES" value="" />
@@ -124,8 +126,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Testy2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Uebungen" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Testing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Testing/Testy2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Testy2" />
         <item itemvalue="Python.Poker" />
         <item itemvalue="Python.ServerForPoker" />
       </list>
@@ -157,6 +183,7 @@
       <workItem from="1733316056182" duration="7149000" />
       <workItem from="1733326432085" duration="115000" />
       <workItem from="1733995725512" duration="1533000" />
+      <workItem from="1734428207856" duration="2023000" />
     </task>
     <task id="LOCAL-00001" summary="3.12 Uni sync">
       <option name="closed" value="true" />
@@ -198,6 +225,8 @@
     <SUITE FILE_PATH="coverage/Uebungen$ClientPoker.coverage" NAME="ClientPoker Coverage Results" MODIFIED="1733232413744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Poker" />
     <SUITE FILE_PATH="coverage/Uebungen$Kniffel.coverage" NAME="Kniffel Coverage Results" MODIFIED="1733320662500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Kniffel" />
     <SUITE FILE_PATH="coverage/Uebungen$TKinter_shit.coverage" NAME="TKinter shit Coverage Results" MODIFIED="1733320619677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Poker" />
+    <SUITE FILE_PATH="coverage/Uebungen$Doctests_in_Testy.coverage" NAME="Doctests in Testy Coverage Results" MODIFIED="1734428423780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Testing" />
+    <SUITE FILE_PATH="coverage/Uebungen$Testy2.coverage" NAME="Testy2 Coverage Results" MODIFIED="1734428718534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Testing" />
     <SUITE FILE_PATH="coverage/Uebungen$ServerForPoker.coverage" NAME="ServerForPoker Coverage Results" MODIFIED="1733320374031" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Poker" />
     <SUITE FILE_PATH="coverage/Uebungen$Poker.coverage" NAME="Poker Coverage Results" MODIFIED="1733995859737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Poker" />
   </component>

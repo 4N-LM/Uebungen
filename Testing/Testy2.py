@@ -1,44 +1,48 @@
 def loesung(formel: str, werte: tuple) -> bool:
     """
-    Evaluates a logical formula with given truth values for variables.
+    Evaluates a logical formula with specified truth values for its variables.
 
     Args:
-        formel (str): A logical formula like 'a and (b or c)'
-        werte (tuple): Tuple of boolean values corresponding to variables in order of appearance
+        formel (str): A logical formula as a string (e.g., 'a and (b or c)').
+        werte (tuple): A tuple of booleans for each variable (e.g., (True, True, False)).
 
     Returns:
-        bool: Result of evaluating the formula
-
-    Example:
-        >>> loesung('a and (b or c)', (True, False, True))
-        True
+        bool: The result of the evaluated logical formula.
     """
-    # Create mapping of variables to their values
-    variables = []
-    for char in formel:
-        if char.isalpha() and char not in variables:
-            variables.append(char)
-    print(variables)
+    # Extract all variable names from the formula in sorted order (e.g., 'a', 'b', 'c', ...)
+    variablen = sorted(set(char for char in formel if char.isalpha()))
 
-    if len(variables) != len(werte):
-        raise ValueError("Number of variables doesn't match number of values")
+    # Check if the number of values matches the number of variables
+    if len(variablen) != len(werte):
+        raise ValueError("The number of values does not match the number of variables.")
 
-    var_dict = dict(zip(variables, werte))
+    # Create a dictionary that maps each variable to its corresponding value
+    mapping = {variablen[i]: werte[i] for i in range(len(variablen))}
 
-    # Replace variables with their values
-    formula_with_values = formel
-    for var, value in var_dict.items():
-        formula_with_values = formula_with_values.replace(var, str(value))
+    # Replace the variables in the formula with their boolean values
+    for var, value in mapping.items():
+        formel = formel.replace(var, str(value))
 
-    # Replace logical operators with Python operators
-    formula_with_values = formula_with_values.replace('and', 'and')
-    formula_with_values = formula_with_values.replace('or', 'or')
-    formula_with_values = formula_with_values.replace('not', 'not')
-
-    # Evaluate the resulting expression
+    # Evaluate the logical formula using eval()
     try:
-        return eval(formula_with_values)
+        result = eval(formel)
+        if not isinstance(result, bool):
+            raise ValueError("The formula must evaluate to a boolean value.")
     except Exception as e:
-        raise ValueError(f"Invalid formula: {e}")
+        raise ValueError(f"Error in evaluating the formula: {e}")
 
-loesung('a and (b or c)', (True, False, True))
+    return result
+
+
+# Example usage:
+if __name__ == "__main__":
+    # Define a logical formula and the corresponding truth values
+    formel = 'a and (b or c)'
+    werte = (True, True, False)
+
+    # Call the loesung function and print the result
+    try:
+        ergebnis = loesung(formel, werte)
+        print(f"The result of the formula '{formel}' with values {werte} is: {ergebnis}")
+    except ValueError as e:
+        print(e)
