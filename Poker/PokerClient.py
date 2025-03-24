@@ -36,19 +36,24 @@ def receive_data():
             data = client_socket.recv(1024)   
             if data.decode() != "":
                 tmp = data.decode().split(':')
-                if len(tmp) == 2:
+                if len(tmp)%2 == 1:
                     # Daten an die Haupt-GUI weitergeben
-                    root.after(0, process_server_data, tmp)
+                    i = 0
+                    while i < len(tmp)-2:
+                        root.after(0, process_server_data, [tmp[i],tmp[i+1]])
+                        i += 2
                 else:
                     print('Falsche Länge der Antwort vom Server:', tmp)
+                    print('Data:' + str(data))
         except (KeyboardInterrupt, ConnectionResetError):
             print("Verbindung zum Server wurde getrennt.")
             break
         except Exception as e:
             print(f"Fehler beim Empfangen von Daten: {e}")
+            if i != 0: print(i)
             break
 
-def process_server_data(data):
+def process_server_data(data:list):
     # Diese Funktion wird im Hauptthread aufgerufen und ändert die GUI
     global darfSenden  # Zugriff auf die globale Variable
     

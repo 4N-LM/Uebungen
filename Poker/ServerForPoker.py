@@ -25,6 +25,7 @@ class Player:
         return hash((self.name,self.socket,self.hand,self.money,self.bet,self.activePlayer))
 
     def send(self,msg:str):
+        msg = msg + ":"
         self.socket.send(msg.encode())
         time.sleep(0.1)
 
@@ -97,9 +98,10 @@ def send_pot(money:int):
 def send_bet(money:int):
     return 'bet:' + str(money)
 
-def recive_Data(player:Player):
+def recive_Data(player:Player,playerinput:bool = True):
     x = player.socket
-    sendToSingle('get:get',player)
+    if playerinput:
+        sendToSingle('get:get:',player)
     try:
         while True:
             data = x.recv(1024)   
@@ -119,9 +121,16 @@ def recive_Data(player:Player):
         return ['Null']
 
 def gettingSingleBet(bet:int,player:Player):
-    sendToAll('turn:' + player.name)
-    sendToAll(send_bet(bet))
-    data = recive_Data(player)[0]
+    sendToAll('turn:' + player.name + ":bet:" + str(bet))
+    #sendToAll(send_bet(bet))
+    data:list = ['Null']
+    for i in range(5):
+        data = recive_Data(player)[0]
+        if data[0] != 'Null': break
+        try:
+            data = int(data)
+        except:
+            print("bet is not a number ? data is: " + data)
     if data != 'fold':
         return int(data)
     else:
@@ -194,7 +203,7 @@ def gettingAllBets(pot:int):
         print('Player: ' + i.name + '\nBet: ' + str(i.bet) + '\nPot: ' + str(pot))
         pot += i.bet
         i.money -= i.bet
-        i.send('mony:' + str(i.money))
+        i.send('mony:' + str(i.money)+ ':')
     print('Pot Bevore Return: ' + str(pot))
     return pot
 
@@ -233,9 +242,9 @@ def finalEvaluation(players:list):
         if len(x) >1:
             x = evalHelper(x,2)
             if len(x) >1:
-                y = ''
+                y:list = []
                 for i in x:
-                    y += i
+                    y.append(i)
                 return tuple(y)
             else:
                 return (x[0],)
@@ -259,15 +268,15 @@ if Test:
              |          |________       ________|            |
               
               ''')
-sendToAll('mony:2000')
+sendToAll('mony:2000:')
 for i in clients:
-    i.send('name:name')
-    i.name = recive_Data(i)[0]   
+    i.send('name:name:')
+    i.name = recive_Data(i,False)[0]   
     i.money=2000
 
 while True:
     sendToAll(send_table(''))
-    sendToAll('info: ')
+    sendToAll('info: :')
     active_player = clients[:]
     deck = Poker.create_deck()
     table = createCardSupset(3)
@@ -312,13 +321,13 @@ while True:
         else:
             winner[0].money += pot
             print('Winner: ' + winner[0].name)
-            sendToSingle('mony:' + str(winner[0].money),winner[0])
+            sendToSingle('mony:' + str(winner[0].money),winner[0] + ":")
             sendToAll('info:Winner is ' + winner[0].name + ' with ' + str(winner[0].score[0]))
         
     if input("Again? : - ").lower() not in ['yes','y','j','ja','yo']:
         break
 
-sendToAll('exit:exit')
+sendToAll('exit:exit:')
 print("Ende")
 for i in range(len(clients)):
     clients[i].socket.close()
